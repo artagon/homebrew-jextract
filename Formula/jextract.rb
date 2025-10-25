@@ -22,7 +22,7 @@ class Jextract < Formula
   end
   def install
     libexec.install Dir["*"]
-    bin.install_symlink Dir["#{libexec}/bin/*"]
+    bin.write_env_script libexec/"bin/jextract", { JAVA_HOME: libexec }
   end
   test do
     output = shell_output("#{bin}/jextract --version 2>&1")

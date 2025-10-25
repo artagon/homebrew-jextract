@@ -152,7 +152,7 @@ which jextract
 
 **For cask installation:**
 ```bash
-/Library/Java/JavaVirtualMachines/jextract-25.jdk/Contents/Home/bin/jextract --version
+/Library/Java/JavaVirtualMachines/jextract-25.jdk/bin/jextract --version
 ```
 
 ## Updating
