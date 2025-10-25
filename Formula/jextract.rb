@@ -21,15 +21,17 @@ class Jextract < Formula
     end
   end
   def install
-    # Install directly to prefix to preserve relative paths for bundled runtime
-    # The jextract script expects to find runtime/bin/java at ../runtime/bin/java
-    prefix.install Dir["*"]
+    # Install to libexec to preserve directory structure
+    libexec.install Dir["*"]
+
+    # Create wrapper script that sets JAVA_HOME for bundled runtime
+    bin.write_env_script libexec/"bin/jextract", JAVA_HOME: libexec
 
     # Create shell environment configuration files
     (prefix/"etc/profile.d").mkpath
     (prefix/"etc/profile.d/jextract.sh").write <<~EOS
       # jextract environment configuration
-      export JEXTRACT_HOME="#{prefix}"
+      export JEXTRACT_HOME="#{libexec}"
       case ":$PATH:" in
         *:"#{bin}":*) ;;
         *) export PATH="$PATH:#{bin}" ;;
@@ -39,7 +41,7 @@ class Jextract < Formula
     (prefix/"share/zsh/site-functions").mkpath
     (prefix/"share/zsh/site-functions/jextract.zsh").write <<~EOS
       # jextract environment configuration
-      export JEXTRACT_HOME="#{prefix}"
+      export JEXTRACT_HOME="#{libexec}"
       case ":$PATH:" in
         *:"#{bin}":*) ;;
         *) export PATH="$PATH:#{bin}" ;;
@@ -49,7 +51,7 @@ class Jextract < Formula
     (prefix/"share/fish/vendor_conf.d").mkpath
     (prefix/"share/fish/vendor_conf.d/jextract.fish").write <<~EOS
       # jextract environment configuration
-      set -gx JEXTRACT_HOME "#{prefix}"
+      set -gx JEXTRACT_HOME "#{libexec}"
       fish_add_path "#{bin}"
     EOS
   end
