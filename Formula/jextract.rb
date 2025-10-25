@@ -59,13 +59,13 @@ class Jextract < Formula
       To automatically configure your shell environment for jextract, add the following to your shell profile:
 
       For Bash (~/.bash_profile or ~/.bashrc):
-        source #{prefix}/etc/profile.d/jextract.sh
+        source "$(brew --prefix jextract)/etc/profile.d/jextract.sh"
 
       For Zsh (~/.zshrc):
-        source #{prefix}/share/zsh/site-functions/jextract.zsh
+        source "$(brew --prefix jextract)/share/zsh/site-functions/jextract.zsh"
 
       For Fish (~/.config/fish/config.fish):
-        source #{prefix}/share/fish/vendor_conf.d/jextract.fish
+        source (brew --prefix jextract)/share/fish/vendor_conf.d/jextract.fish
 
       This will set JEXTRACT_HOME and ensure jextract is in your PATH.
     EOS
