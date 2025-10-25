@@ -25,7 +25,7 @@ class Jextract < Formula
     libexec.install Dir["*"]
 
     # Create wrapper script that sets JAVA_HOME for bundled runtime
-    bin.write_env_script libexec/"bin/jextract", JAVA_HOME: libexec
+    (bin/"jextract").write_env_script libexec/"bin/jextract", JAVA_HOME: libexec
 
     # Create shell environment configuration files
     (prefix/"etc/profile.d").mkpath
