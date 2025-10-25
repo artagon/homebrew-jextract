@@ -1,6 +1,8 @@
 # homebrew-jextract
 
-Homebrew tap for Jextract - the tool to mechanically generate Java bindings from native library headers. Includes automated updates, CI/CD, and support for both macOS and Linux.
+**Homebrew tap for Jextract** - OpenJDK's official tool to automatically generate Java bindings from C/C++ library headers without writing JNI code. Part of Project Panama's Foreign Function & Memory API (FFM API). Call native libraries from Java with zero boilerplate.
+
+🚀 **Easy Installation** • ✅ **Multi-Platform** (macOS ARM64/x64, Linux ARM64/x64) • 🔄 **Auto-Updates** • 🔒 **SHA-256 Verified**
 
 [![Release](https://github.com/Artagon/homebrew-jextract/actions/workflows/release.yml/badge.svg)](https://github.com/Artagon/homebrew-jextract/actions/workflows/release.yml)
 [![Validate](https://github.com/Artagon/homebrew-jextract/actions/workflows/validate.yml/badge.svg)](https://github.com/Artagon/homebrew-jextract/actions/workflows/validate.yml)
@@ -8,31 +10,115 @@ Homebrew tap for Jextract - the tool to mechanically generate Java bindings from
 
 ## About Jextract
 
-[Jextract](https://jdk.java.net/jextract/) is a tool which mechanically generates Java bindings from native library headers. This means you can call native C libraries from Java without writing any JNI code.
+**[Jextract](https://jdk.java.net/jextract/)** is OpenJDK's official tool for automatically generating Java bindings from C library headers, eliminating the need to write manual JNI (Java Native Interface) code. Part of [Project Panama](https://openjdk.org/projects/panama/), jextract bridges the gap between Java and native code through the modern **Foreign Function & Memory (FFM) API** ([JEP 454](https://openjdk.org/jeps/454)).
 
-### What Does Jextract Provide?
+### 🎯 The Problem Jextract Solves
 
-- **Automatic Java Bindings**: Generate Java code to call C libraries directly
-- **Type-Safe Access**: Strong typing for native library interfaces
-- **Foreign Function & Memory API**: Uses modern Java FFM API (JEP 454)
-- **Header Parsing**: Parses C header files using libclang
-- **No Manual JNI**: Eliminates the need for hand-written JNI code
+Traditionally, calling native C/C++ libraries from Java required:
+- Writing complex JNI boilerplate code in both Java and C
+- Manual memory management and type conversions
+- Dealing with platform-specific compilation issues
+- Maintaining fragile code that breaks when headers change
+- Deep expertise in both Java and native development
 
-### Key Benefits
+**Jextract automates all of this**, parsing C headers with libclang and generating type-safe Java bindings automatically.
 
-- **Productivity**: Generate bindings automatically instead of writing JNI by hand
-- **Safety**: Type-safe access to native code through Java's Foreign Function & Memory API
-- **Maintainability**: Regenerate bindings when native library headers change
-- **Performance**: Direct access to native code with minimal overhead
+### 🚀 What Jextract Provides
 
-### Use Cases
+- **Zero-Code Native Interop**: Call C functions, access structs, use callbacks - no JNI code required
+- **Automatic Code Generation**: Parse `.h` header files → Generate complete Java bindings
+- **Type-Safe Memory Access**: Leverage Java's FFM API for safe, structured access to native memory
+- **Modern Java Integration**: Works with Java 21+ preview features, graduating to standard in future releases
+- **libclang-Powered**: Uses LLVM's libclang for industrial-strength C header parsing
+- **Struct & Union Support**: Full support for complex C data structures, nested types, and unions
+- **Function Pointers & Callbacks**: Bidirectional interop with native callbacks and function pointers
+- **Cross-Platform**: Generate bindings for Windows, macOS, and Linux from the same headers
 
-Jextract is particularly useful for:
-- Interfacing with existing C libraries from Java
-- Systems programming in Java
-- Calling OS-specific APIs
-- Wrapping native libraries for Java applications
-- High-performance computing requiring native code access
+### 🔧 Real-World Use Cases
+
+#### System Libraries & APIs
+```bash
+# Generate bindings for POSIX APIs
+jextract --source -t org.unix /usr/include/unistd.h
+
+# macOS frameworks
+jextract --source -t com.apple.foundation Foundation.h
+
+# Linux system calls
+jextract --source -t org.linux /usr/include/sys/socket.h
+```
+
+#### Graphics & Media
+- **OpenGL/Vulkan**: Direct GPU programming without JNI overhead
+- **FFmpeg**: Video/audio processing with native performance
+- **SDL2**: Game development with native windowing and input
+- **Cairo/Skia**: High-performance 2D graphics rendering
+
+#### Scientific Computing
+- **BLAS/LAPACK**: Linear algebra operations at native speed
+- **FFTW**: Fast Fourier transforms for signal processing
+- **HDF5**: Scientific data format I/O
+- **CUDA/ROCm**: GPU-accelerated computing
+
+#### Embedded Systems
+- **libusb**: Direct USB device access
+- **wiringPi**: Raspberry Pi GPIO control
+- **SerialPort APIs**: Industrial device communication
+
+#### Database & Performance
+- **SQLite**: Embedded database without JDBC overhead
+- **LevelDB/RocksDB**: High-performance key-value stores
+- **jemalloc/tcmalloc**: Custom memory allocators
+
+### ⚡ Key Advantages Over Traditional JNI
+
+| Feature | Jextract + FFM API | Traditional JNI |
+|---------|-------------------|-----------------|
+| **Code Generation** | Automatic from headers | Manual for every function |
+| **Type Safety** | Compile-time checked | Runtime errors common |
+| **Memory Safety** | Structured, scoped allocation | Manual malloc/free |
+| **Performance** | Near-native (no marshalling) | Marshalling overhead |
+| **Maintenance** | Regenerate when headers change | Manual updates required |
+| **Learning Curve** | Java developers only | Requires C/C++ expertise |
+| **Debugging** | Pure Java stack traces | Mixed Java/native traces |
+| **Build Complexity** | No native compilation | Platform-specific builds |
+
+### 💡 Technical Highlights
+
+- **Project Panama Integration**: Part of OpenJDK's initiative to improve Java-native interoperability
+- **Foreign Function & Memory API**: Modern replacement for JNI with improved safety and performance
+- **MemorySegment API**: Safe, deterministic memory management without garbage collection
+- **Arena-Based Allocation**: Automatic cleanup of native resources using try-with-resources
+- **SymbolLookup**: Runtime function discovery from shared libraries
+- **MethodHandle-Based**: Uses Java's method handles for efficient, type-safe native calls
+- **Varargs Support**: Handles C variadic functions like printf
+- **Macro Expansion**: Processes C preprocessor macros and constants
+
+### 🎓 Who Should Use Jextract?
+
+- **Java Developers** needing to call native libraries without learning JNI
+- **Systems Programmers** who want to use Java for low-level programming
+- **Library Authors** creating Java wrappers for C/C++ libraries
+- **Scientific Computing** developers requiring native performance with Java productivity
+- **Game Developers** interfacing with graphics and audio libraries
+- **IoT/Embedded** engineers working with hardware interfaces
+- **Performance Engineers** optimizing critical paths with native code
+
+### 📋 Requirements
+
+- **Java 21 or later** (FFM API is in preview, graduating to standard in future releases)
+- **`--enable-preview`** flag required for compilation and execution
+- **C headers** for the libraries you want to bind
+- **Target library** installed on the system (e.g., `.so` on Linux, `.dylib` on macOS)
+
+### 🔗 Part of Project Panama
+
+Jextract is one component of [Project Panama](https://openjdk.org/projects/panama/), OpenJDK's comprehensive effort to improve Java's connection to native code:
+
+- **Foreign Function API**: Call native functions without JNI ([JEP 454](https://openjdk.org/jeps/454))
+- **Foreign Memory API**: Safe native memory access ([JEP 454](https://openjdk.org/jeps/454))
+- **Vector API**: SIMD operations for parallel computation ([JEP 469](https://openjdk.org/jeps/469))
+- **Jextract**: Automatic binding generation (this tool)
 
 ## Quick Start
 
