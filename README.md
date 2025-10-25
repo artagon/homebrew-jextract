@@ -122,17 +122,11 @@ The formula installation creates shell environment scripts to automatically conf
 
 **For Bash** (`~/.bash_profile` or `~/.bashrc`):
 ```bash
-source $(brew --prefix jextract)/etc/profile.d/jextract.sh
-```
-
-**For Zsh** (`~/.zshrc`):
-```bash
-source $(brew --prefix jextract)/share/zsh/site-functions/jextract.zsh
-```
-
-**For Fish** (`~/.config/fish/config.fish`):
-```bash
-source $(brew --prefix jextract)/share/fish/vendor_conf.d/jextract.fish
+# Recommended: Hardcode the Homebrew prefix to avoid slow shell startup
+# First, run this in your terminal to get the prefix:
+#   brew --prefix jextract
+# Then, use the output (e.g., /opt/homebrew or /usr/local) below:
+source /opt/homebrew/etc/profile.d/jextract.sh
 ```
 
 These scripts will:
