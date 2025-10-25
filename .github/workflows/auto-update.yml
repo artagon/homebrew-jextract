@@ -63,10 +63,10 @@ jobs:
 
           # Download URLs
           declare -A urls=(
-            [mac_arm]="https://download.java.net/java/early_access/jdk26/${build}/GPL/openjdk-25-jextract+${build}_macos-aarch64_bin.tar.gz"
-            [mac_x64]="https://download.java.net/java/early_access/jdk26/${build}/GPL/openjdk-25-jextract+${build}_macos-x64_bin.tar.gz"
-            [linux_arm]="https://download.java.net/java/early_access/jdk26/${build}/GPL/openjdk-25-jextract+${build}_linux-aarch64_bin.tar.gz"
-            [linux_x64]="https://download.java.net/java/early_access/jdk26/${build}/GPL/openjdk-25-jextract+${build}_linux-x64_bin.tar.gz"
+            [mac_arm]="https://download.java.net/java/early_access/jextract/25/${build}/GPL/openjdk-25-jextract+${build}_macos-aarch64_bin.tar.gz"
+            [mac_x64]="https://download.java.net/java/early_access/jextract/25/${build}/GPL/openjdk-25-jextract+${build}_macos-x64_bin.tar.gz"
+            [linux_arm]="https://download.java.net/java/early_access/jextract/25/${build}/GPL/openjdk-25-jextract+${build}_linux-aarch64_bin.tar.gz"
+            [linux_x64]="https://download.java.net/java/early_access/jextract/25/${build}/GPL/openjdk-25-jextract+${build}_linux-x64_bin.tar.gz"
           )
 
           for key in mac_arm mac_x64 linux_arm linux_x64; do
