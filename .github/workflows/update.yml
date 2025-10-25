@@ -153,7 +153,7 @@ EOF
           import re
           from pathlib import Path
 
-          cask_path = Path("Casks/jdk26valhalla.rb")
+          cask_path = Path("Casks/jextract.rb")
           cask_text = cask_path.read_text()
           cask_text, replaced = re.subn(
               r'version "[^"]+"',
@@ -173,7 +173,7 @@ EOF
               raise SystemExit("Failed to update cask checksums")
           cask_path.write_text(cask_text)
 
-          formula_path = Path("Formula/jdk26valhalla.rb")
+          formula_path = Path("Formula/jextract.rb")
           formula_text = formula_path.read_text()
           formula_text, replaced = re.subn(
               r'version "[^"]+"',

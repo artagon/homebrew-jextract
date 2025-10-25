@@ -35,11 +35,11 @@ jobs:
           echo "build=$build" >> $GITHUB_OUTPUT
 
           # Get current version from cask
-          current_version=$(grep -oP 'version "\K[^"]+' Casks/jdk26valhalla.rb)
+          current_version=$(grep -oP 'version "\K[^"]+' Casks/jextract.rb)
           current_build=$(echo "$current_version" | grep -oP '\+\K\d+')
 
           if [[ -z "$current_build" || ! "$current_build" =~ ^[0-9]+$ ]]; then
-            echo "Failed to determine current build from Casks/jdk26valhalla.rb"
+            echo "Failed to determine current build from Casks/jextract.rb"
             exit 1
           fi
 
@@ -63,10 +63,10 @@ jobs:
 
           # Download URLs
           declare -A urls=(
-            [mac_arm]="https://download.java.net/java/early_access/jdk26/${build}/GPL/openjdk-26-ea+${build}_macos-aarch64_bin.tar.gz"
-            [mac_x64]="https://download.java.net/java/early_access/jdk26/${build}/GPL/openjdk-26-ea+${build}_macos-x64_bin.tar.gz"
-            [linux_arm]="https://download.java.net/java/early_access/jdk26/${build}/GPL/openjdk-26-ea+${build}_linux-aarch64_bin.tar.gz"
-            [linux_x64]="https://download.java.net/java/early_access/jdk26/${build}/GPL/openjdk-26-ea+${build}_linux-x64_bin.tar.gz"
+            [mac_arm]="https://download.java.net/java/early_access/jextract/25/${build}/GPL/openjdk-25-jextract+${build}_macos-aarch64_bin.tar.gz"
+            [mac_x64]="https://download.java.net/java/early_access/jextract/25/${build}/GPL/openjdk-25-jextract+${build}_macos-x64_bin.tar.gz"
+            [linux_arm]="https://download.java.net/java/early_access/jextract/25/${build}/GPL/openjdk-25-jextract+${build}_linux-aarch64_bin.tar.gz"
+            [linux_x64]="https://download.java.net/java/early_access/jextract/25/${build}/GPL/openjdk-25-jextract+${build}_linux-x64_bin.tar.gz"
           )
 
           for key in mac_arm mac_x64 linux_arm linux_x64; do
@@ -96,8 +96,8 @@ jobs:
           current_build=${{ steps.fetch_version.outputs.current_build }}
 
           # Update Cask
-          new_cask_version="26-ea+${build},${build}"
-          sed -i "s|version \".*\"|version \"${new_cask_version}\"|g" Casks/jdk26valhalla.rb
+          new_cask_version="25-jextract+${build},${build}"
+          sed -i "s|version \".*\"|version \"${new_cask_version}\"|g" Casks/jextract.rb
 
           # Update checksums in Cask
           awk -v arm="${{ steps.checksums.outputs.sha_mac_arm }}" \
@@ -107,7 +107,7 @@ jobs:
                  print "         intel: \"" intel "\""
                  next
                }
-               {print}' Casks/jdk26valhalla.rb > Casks/jdk26valhalla.rb.tmp && mv Casks/jdk26valhalla.rb.tmp Casks/jdk26valhalla.rb
+               {print}' Casks/jextract.rb > Casks/jextract.rb.tmp && mv Casks/jextract.rb.tmp Casks/jextract.rb
 
       - name: Update formula
         if: steps.fetch_version.outputs.needs_update == 'true'
@@ -116,8 +116,8 @@ jobs:
           current_build=${{ steps.fetch_version.outputs.current_build }}
 
           # Update Formula
-          sed -i "s/26-ea+${current_build}/26-ea+${build}/g" Formula/jdk26valhalla.rb
-          sed -i "s|jdk26/${current_build}/GPL|jdk26/${build}/GPL|g" Formula/jdk26valhalla.rb
+          sed -i "s/25-jextract+${current_build}/25-jextract+${build}/g" Formula/jextract.rb
+          sed -i "s|jextract/25/${current_build}/GPL|jextract/25/${build}/GPL|g" Formula/jextract.rb
 
           # Update checksums in Formula (supports both macOS and Linux ARM64/x64)
           awk -v mac_arm="${{ steps.checksums.outputs.sha_mac_arm }}" \
@@ -141,13 +141,13 @@ jobs:
                  else if (in_linux && in_arm_block) { sub(/sha256 ".*"/, "sha256 \"" linux_arm "\"") }
                  else if (in_linux && !in_arm_block) { sub(/sha256 ".*"/, "sha256 \"" linux_x64 "\"") }
                }
-               {print}' Formula/jdk26valhalla.rb > Formula/jdk26valhalla.rb.tmp && mv Formula/jdk26valhalla.rb.tmp Formula/jdk26valhalla.rb
+               {print}' Formula/jextract.rb > Formula/jextract.rb.tmp && mv Formula/jextract.rb.tmp Formula/jextract.rb
 
       - name: Validate syntax
         if: steps.fetch_version.outputs.needs_update == 'true'
         run: |
-          ruby -c Casks/jdk26valhalla.rb
-          ruby -c Formula/jdk26valhalla.rb
+          ruby -c Casks/jextract.rb
+          ruby -c Formula/jextract.rb
 
       - name: Create Pull Request
         if: steps.fetch_version.outputs.needs_update == 'true'
@@ -162,7 +162,7 @@ jobs:
             This PR updates the Jextract EA cask and formula to Build ${{ steps.fetch_version.outputs.build }}.
 
             ### Changes
-            - Updated version from `26-ea+${{ steps.fetch_version.outputs.current_build }}` to `26-ea+${{ steps.fetch_version.outputs.build }}`
+            - Updated version from `25-jextract+${{ steps.fetch_version.outputs.current_build }}` to `25-jextract+${{ steps.fetch_version.outputs.build }}`
             - Updated download URLs
             - Updated SHA256 checksums for all platforms
 

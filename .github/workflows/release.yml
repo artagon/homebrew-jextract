@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'Casks/jdk26valhalla.rb'
-      - 'Formula/jdk26valhalla.rb'
+      - 'Casks/jextract.rb'
+      - 'Formula/jextract.rb'
 
 permissions:
   contents: write
@@ -28,17 +28,17 @@ jobs:
 
       - name: Audit cask
         run: |
-          brew untap artagon/jdk26valhalla || true
-          brew tap --custom-remote artagon/jdk26valhalla "$GITHUB_WORKSPACE"
-          brew audit --cask artagon/jdk26valhalla/jdk26valhalla
+          brew untap artagon/jextract || true
+          brew tap --custom-remote artagon/jextract "$GITHUB_WORKSPACE"
+          brew audit --cask artagon/jextract/jextract
 
       - name: Extract version from cask
         id: version
         run: |
           set -euo pipefail
-          VERSION=$(grep -oP 'version "\K[^"]+' Casks/jdk26valhalla.rb)
+          VERSION=$(grep -oP 'version "\K[^"]+' Casks/jextract.rb)
           if [[ -z "$VERSION" ]]; then
-            echo "Failed to extract version from Casks/jdk26valhalla.rb"
+            echo "Failed to extract version from Casks/jextract.rb"
             exit 1
           fi
           echo "version=$VERSION" >> $GITHUB_OUTPUT
@@ -203,7 +203,7 @@ jobs:
             "creationInfo": {
               "created": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
               "creators": [
-                "Tool: Artagon/homebrew-jdk26valhalla",
+                "Tool: Artagon/homebrew-jextract",
                 "Organization: Artagon"
               ]
             },
@@ -257,10 +257,10 @@ jobs:
             ### macOS & Linux
 
             ```bash
-            brew tap Artagon/jdk26valhalla
-            brew install --cask jdk26valhalla  # macOS only
+            brew tap Artagon/jextract
+            brew install --cask jextract  # macOS only
             # or
-            brew install jdk26valhalla  # macOS & Linux
+            brew install jextract  # macOS & Linux
             ```
 
             ## Supported Platforms
