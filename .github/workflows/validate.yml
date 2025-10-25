@@ -21,17 +21,17 @@ jobs:
 
       - name: Validate cask syntax
         run: |
-          brew style Casks/jdk26valhalla.rb
-          ruby -c Casks/jdk26valhalla.rb
+          brew style Casks/jextract.rb
+          ruby -c Casks/jextract.rb
 
       - name: Audit cask
         run: |
-          brew audit --cask artagon/jdk26valhalla/jdk26valhalla
+          brew audit --cask artagon/jextract/jextract
 
       - name: Validate formula syntax
         run: |
-          brew style Formula/jdk26valhalla.rb
-          ruby -c Formula/jdk26valhalla.rb
+          brew style Formula/jextract.rb
+          ruby -c Formula/jextract.rb
 
   test-install-macos:
     timeout-minutes: 30
@@ -50,28 +50,28 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/Library/Caches/Homebrew/downloads
-          key: ${{ runner.os }}-${{ runner.arch }}-homebrew-jdk26valhalla-26-jep401ea2+1-1
+          key: ${{ runner.os }}-${{ runner.arch }}-homebrew-jextract-25-jextract+1-1
           restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-homebrew-jdk26valhalla-
+            ${{ runner.os }}-${{ runner.arch }}-homebrew-jextract-
 
       - name: Test cask installation
         run: |
-          brew install --cask artagon/jdk26valhalla/jdk26valhalla
+          brew install --cask artagon/jextract/jextract
 
       - name: Verify installation
         run: |
-          if [ -d "/Library/Java/JavaVirtualMachines/jdk-26-valhalla.jdk" ]; then
-            echo "✅ JDK installed successfully"
-            /Library/Java/JavaVirtualMachines/jdk-26-valhalla.jdk/Contents/Home/bin/java -version
+          if [ -d "/Library/Java/JavaVirtualMachines/jextract-25.jdk" ]; then
+            echo "✅ Jextract installed successfully"
+            /Library/Java/JavaVirtualMachines/jextract-25.jdk/bin/jextract --version
           else
-            echo "❌ JDK installation failed"
+            echo "❌ Jextract installation failed"
             exit 1
           fi
 
       - name: Cleanup
         if: always()
         run: |
-          brew uninstall --cask artagon/jdk26valhalla/jdk26valhalla || true
+          brew uninstall --cask artagon/jextract/jextract || true
 
   test-install-linux:
     timeout-minutes: 30
@@ -94,9 +94,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/Homebrew/downloads
-          key: ${{ runner.os }}-${{ matrix.arch }}-homebrew-jdk26valhalla-26-jep401ea2+1-1
+          key: ${{ runner.os }}-${{ matrix.arch }}-homebrew-jextract-25-jextract+1-1
           restore-keys: |
-            ${{ runner.os }}-${{ matrix.arch }}-homebrew-jdk26valhalla-
+            ${{ runner.os }}-${{ matrix.arch }}-homebrew-jextract-
 
       - name: Display system info
         run: |
@@ -106,49 +106,38 @@ jobs:
 
       - name: Test formula installation
         run: |
-          brew install artagon/jdk26valhalla/jdk26valhalla
+          brew install artagon/jextract/jextract
 
       - name: Verify installation
         run: |
-          JDK_PREFIX="$(brew --prefix jdk26valhalla)"
-          if [ -d "$JDK_PREFIX" ]; then
-            echo "✅ JDK installed successfully at $JDK_PREFIX"
-            "$JDK_PREFIX/bin/java" -version
+          JEXTRACT_PREFIX="$(brew --prefix jextract)"
+          if [ -d "$JEXTRACT_PREFIX" ]; then
+            echo "✅ Jextract installed successfully at $JEXTRACT_PREFIX"
+            "$JEXTRACT_PREFIX/bin/jextract" --version
           else
-            echo "❌ JDK installation failed"
+            echo "❌ Jextract installation failed"
             exit 1
           fi
 
       - name: Test JAVA_HOME setup
         run: |
-          export JAVA_HOME="$(brew --prefix jdk26valhalla)"
+          export JAVA_HOME="$(brew --prefix jextract)"
           echo "JAVA_HOME=$JAVA_HOME"
-          echo "Testing java compiler and runtime..."
-          "$JAVA_HOME/bin/java" -version
-          "$JAVA_HOME/bin/javac" -version
+          echo "Testing jextract..."
+          "$JAVA_HOME/bin/jextract" --version
 
-      - name: Test basic Java functionality
+      - name: Test basic jextract functionality
         run: |
-          export JAVA_HOME="$(brew --prefix jdk26valhalla)"
+          export JAVA_HOME="$(brew --prefix jextract)"
           export PATH="$JAVA_HOME/bin:$PATH"
 
-          # Create and compile a test program
-          cat > HelloWorld.java << 'EOF'
-          public class HelloWorld {
-              public static void main(String[] args) {
-                  System.out.println("Jextract Valhalla is working!");
-                  System.out.println("Java version: " + System.getProperty("java.version"));
-              }
-          }
-          EOF
-
-          javac HelloWorld.java
-          java HelloWorld
+          # Test jextract help
+          jextract --help
 
       - name: Cleanup
         if: always()
         run: |
-          brew uninstall --formula jdk26valhalla || true
+          brew uninstall --formula jextract || true
 
   validation-status:
     name: Validation Status
