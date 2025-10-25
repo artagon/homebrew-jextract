@@ -17,7 +17,9 @@ cask "jextract" do
 
     staged_root = staged_path.realpath
     candidates = Dir["#{staged_root}/jextract-*"]
-    odie "Expected exactly one jextract directory in #{staged_root}, found #{candidates.length}" if candidates.length != 1
+    if candidates.length != 1
+      odie "Expected exactly one jextract directory in #{staged_root}, found #{candidates.length}"
+    end
 
     jextract_src = Pathname(candidates.first).realpath
     odie "Staged jextract directory #{jextract_src} is not a directory" unless jextract_src.directory?

@@ -62,7 +62,7 @@ jobs:
         run: |
           if [ -d "/Library/Java/JavaVirtualMachines/jextract-25.jdk" ]; then
             echo "✅ Jextract installed successfully"
-            /Library/Java/JavaVirtualMachines/jextract-25.jdk/Contents/Home/bin/jextract --version
+            /Library/Java/JavaVirtualMachines/jextract-25.jdk/bin/jextract --version
           else
             echo "❌ Jextract installation failed"
             exit 1

@@ -278,7 +278,7 @@ brew audit --formula Formula/jextract.rb
 **Test cask:**
 ```bash
 brew install --cask Casks/jextract.rb
-/Library/Java/JavaVirtualMachines/jextract-25.jdk/Contents/Home/bin/jextract --version
+/Library/Java/JavaVirtualMachines/jextract-25.jdk/bin/jextract --version
 brew uninstall --cask jextract
 ```
 
