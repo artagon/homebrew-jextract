@@ -82,6 +82,14 @@ jobs:
           JEXTRACT_PREFIX="$(brew --prefix jextract)"
           if [ -d "$JEXTRACT_PREFIX" ]; then
             echo "✅ Jextract formula installed successfully at $JEXTRACT_PREFIX"
+
+            # Debug: show directory structure
+            echo "Directory structure:"
+            ls -la "$JEXTRACT_PREFIX"
+            echo "Bin directory:"
+            ls -la "$JEXTRACT_PREFIX/bin" || echo "bin is not a directory"
+            file "$JEXTRACT_PREFIX/bin/jextract" || echo "jextract not found"
+
             "$JEXTRACT_PREFIX/bin/jextract" --version
           else
             echo "❌ Jextract formula installation failed"
@@ -225,6 +233,14 @@ jobs:
           JEXTRACT_PREFIX="$(brew --prefix jextract)"
           if [ -d "$JEXTRACT_PREFIX" ]; then
             echo "✅ Jextract installed successfully at $JEXTRACT_PREFIX"
+
+            # Debug: show directory structure
+            echo "Directory structure:"
+            ls -la "$JEXTRACT_PREFIX"
+            echo "Bin directory:"
+            ls -la "$JEXTRACT_PREFIX/bin" || echo "bin is not a directory"
+            file "$JEXTRACT_PREFIX/bin/jextract" || echo "jextract not found"
+
             "$JEXTRACT_PREFIX/bin/jextract" --version
           else
             echo "❌ Jextract installation failed"
