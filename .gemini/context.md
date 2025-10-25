@@ -1,3 +1,9 @@
+<!-- AUTO-GENERATED from .model-context/
+     DO NOT EDIT DIRECTLY - Edit .model-context/shared/ instead
+     Last synced: 2025-10-25 12:46:50 UTC
+     Agent: Gemini Code Assist -->
+
+<!-- BEGIN: .model-context/shared/context.md -->
 # homebrew-jextract - Repository Context
 
 ## Project Overview
@@ -376,4 +382,7 @@ This repository uses a dedicated SSH identity:
 - 31 commits total
 - Active maintenance and improvements ongoing
 
+
+
+<!-- END: .model-context/shared/context.md -->
 

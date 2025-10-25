@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document outlines the security measures and supply chain security practices for the homebrew-jdk26valhalla Homebrew tap. We take the security of our users seriously and have implemented multiple layers of protection.
+This document outlines the security measures and supply chain security practices for the homebrew-jextract Homebrew tap. We take the security of our users seriously and have implemented multiple layers of protection.
 
 ## Reporting Security Vulnerabilities
 
@@ -17,7 +17,7 @@ If you discover a security vulnerability, please report it by:
 
 ### 1. Release Approval Process
 
-**Manual Approval Required**: All releases require manual approval before distribution to prevent automatic deployment of potentially compromised JDK builds.
+**Manual Approval Required**: All releases require manual approval before distribution to prevent automatic deployment of potentially compromised jextract builds.
 
 - Releases use GitHub Environments with required reviewers
 - The `release-approval` environment must be configured with trusted reviewers
@@ -25,15 +25,15 @@ If you discover a security vulnerability, please report it by:
 
 ### 2. Download Verification
 
-**SHA256 Checksums**: All JDK downloads are verified using SHA256 checksums.
+**SHA256 Checksums**: All jextract downloads are verified using SHA256 checksums.
 
 - Checksums are embedded in the Homebrew formula and cask files
 - Homebrew automatically verifies downloads before installation
 - Any checksum mismatch will abort the installation
 
-**GPG Verification** (when available): We check for GPG signatures from OpenJDK.
+**GPG Verification** (when available): We check for GPG signatures from Openjextract.
 
-- OpenJDK EA builds typically don't provide GPG signatures
+- Openjextract EA builds typically don't provide GPG signatures
 - When available, signatures will be verified automatically
 - Current status is logged in release workflows
 
@@ -106,7 +106,7 @@ Each release includes an SBOM in SPDX 2.3 format:
 
 1. **Check the Formula/Cask**:
    ```bash
-   brew cat artagon/jdk26valhalla/jdk26valhalla
+   brew cat artagon/jextract/jextract
    ```
    Verify the SHA256 checksums are present
 
@@ -126,7 +126,7 @@ Each release includes an SBOM in SPDX 2.3 format:
 
 Download the SBOM from the release assets:
 ```bash
-curl -LO https://github.com/Artagon/homebrew-jdk26valhalla/releases/download/v{VERSION}/sbom-{VERSION}.spdx.json
+curl -LO https://github.com/Artagon/homebrew-jextract/releases/download/v{VERSION}/sbom-{VERSION}.spdx.json
 ```
 
 Verify it contains expected package information.
@@ -181,13 +181,13 @@ Changes to workflows require extra scrutiny:
 ### Standards Followed
 
 - **SPDX 2.3**: Software Bill of Materials format
-- **Semantic Versioning**: Version numbering follows JDK versioning
+- **Semantic Versioning**: Version numbering follows jextract versioning
 - **GitHub Security Best Practices**: Actions and workflow security
 
 ### Future Enhancements
 
 **SLSA Provenance** (planned):
-- Will implement when OpenJDK supports SLSA
+- Will implement when Openjextract supports SLSA
 - Provides cryptographic guarantees about build process
 - Enables comprehensive supply chain verification
 
@@ -201,7 +201,7 @@ Changes to workflows require extra scrutiny:
 ### Dependency Updates
 
 - GitHub Actions: Weekly Dependabot checks
-- Homebrew formula: Updated when new JDK builds are released
+- Homebrew formula: Updated when new jextract builds are released
 - Security patches: Applied immediately upon discovery
 
 ### Workflow Updates

@@ -85,11 +85,11 @@ usage() {
 Usage: $0 <version> <platform>
 
 Arguments:
-  version   - Version string (e.g., 26-ea+20)
+  version   - Version string (e.g., 25-jextract+1-1)
   platform  - Platform (macos-arm64, macos-x64, linux-arm64, linux-x64)
 
 Examples:
-  $0 26-ea+20 macos-arm64
+  $0 25-jextract+1-1 macos-arm64
 EOF
   exit 1
 }

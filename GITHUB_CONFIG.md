@@ -42,7 +42,7 @@ This document summarizes the GitHub repository security configurations that have
 **Location**: Settings > Actions > General > Fork pull request workflows
 
 **Steps to Configure**:
-1. Navigate to: https://github.com/Artagon/homebrew-jdk26valhalla/settings/actions
+1. Navigate to: https://github.com/Artagon/homebrew-jextract/settings/actions
 2. Scroll to "Fork pull request workflows from Outside collaborators"
 3. Select: **"Require approval for first-time contributors"**
 
@@ -55,7 +55,7 @@ This document summarizes the GitHub repository security configurations that have
 **Location**: Settings > Security > Code security and analysis
 
 **Steps to Enable**:
-1. Navigate to: https://github.com/Artagon/homebrew-jdk26valhalla/settings/security_analysis
+1. Navigate to: https://github.com/Artagon/homebrew-jextract/settings/security_analysis
 2. Enable:
    - ✅ Dependency graph (if not already enabled)
    - ✅ Dependabot alerts
@@ -68,7 +68,7 @@ This document summarizes the GitHub repository security configurations that have
 **Location**: Settings > Security > Code security and analysis
 
 **Steps to Enable**:
-1. Navigate to: https://github.com/Artagon/homebrew-jdk26valhalla/settings/security_analysis
+1. Navigate to: https://github.com/Artagon/homebrew-jextract/settings/security_analysis
 2. Enable:
    - ✅ Secret scanning
    - ✅ Push protection for secrets
@@ -79,7 +79,7 @@ This document summarizes the GitHub repository security configurations that have
 
 ### Verify Release Approval Environment
 ```bash
-gh api repos/Artagon/homebrew-jdk26valhalla/environments/release-approval
+gh api repos/Artagon/homebrew-jextract/environments/release-approval
 ```
 
 Expected output should include:
@@ -88,7 +88,7 @@ Expected output should include:
 
 ### Verify Branch Protection
 ```bash
-gh api repos/Artagon/homebrew-jdk26valhalla/branches/main/protection
+gh api repos/Artagon/homebrew-jextract/branches/main/protection
 ```
 
 Expected output should show:
@@ -97,10 +97,10 @@ Expected output should show:
 - `"required_conversation_resolution": true`
 
 ### Test Release Approval
-The next time you push changes to `Casks/jdk26valhalla.rb` or `Formula/jdk26valhalla.rb`:
+The next time you push changes to `Casks/jextract.rb` or `Formula/jextract.rb`:
 1. The release workflow will trigger
 2. You'll see a pending deployment waiting for approval
-3. Navigate to: https://github.com/Artagon/homebrew-jdk26valhalla/actions
+3. Navigate to: https://github.com/Artagon/homebrew-jextract/actions
 4. Click on the running workflow
 5. Click "Review deployments" to approve/reject
 
@@ -117,11 +117,11 @@ The next time you push changes to `Casks/jdk26valhalla.rb` or `Formula/jdk26valh
 
 ## 🔗 Quick Links
 
-- Repository Settings: https://github.com/Artagon/homebrew-jdk26valhalla/settings
-- Actions Settings: https://github.com/Artagon/homebrew-jdk26valhalla/settings/actions
-- Security Settings: https://github.com/Artagon/homebrew-jdk26valhalla/settings/security_analysis
-- Environments: https://github.com/Artagon/homebrew-jdk26valhalla/settings/environments
-- Branch Protection: https://github.com/Artagon/homebrew-jdk26valhalla/settings/branches
+- Repository Settings: https://github.com/Artagon/homebrew-jextract/settings
+- Actions Settings: https://github.com/Artagon/homebrew-jextract/settings/actions
+- Security Settings: https://github.com/Artagon/homebrew-jextract/settings/security_analysis
+- Environments: https://github.com/Artagon/homebrew-jextract/settings/environments
+- Branch Protection: https://github.com/Artagon/homebrew-jextract/settings/branches
 
 ## 📚 Additional Resources
 

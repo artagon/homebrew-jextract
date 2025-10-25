@@ -43,7 +43,7 @@ ignore:
 EOF
 
 cat > .gemini/styleguide.md << 'EOF'
-# Gemini Code Assist Style Guide for homebrew-jdk26ea
+# Gemini Code Assist Style Guide for homebrew-jextract
 
 ## General Principles
 1. Security first - validate all inputs, verify checksums
@@ -112,9 +112,9 @@ docs: update README with installation instructions
 ## Testing Requirements
 
 ### Before Committing
-- Validate Ruby syntax: `ruby -c Casks/jdk26ea.rb`
-- Run style checks: `brew style Casks/jdk26ea.rb`
-- Run audit: `brew audit --cask Casks/jdk26ea.rb`
+- Validate Ruby syntax: `ruby -c Casks/jextract.rb`
+- Run style checks: `brew style Casks/jextract.rb`
+- Run audit: `brew audit --cask Casks/jextract.rb`
 
 ### CI Expectations
 - All tests must pass on macOS 13, macOS 14
@@ -165,7 +165,7 @@ echo "Setting up GitHub Copilot..."
 mkdir -p .github
 
 cat > .github/copilot-instructions.md << 'EOF'
-# GitHub Copilot Instructions for homebrew-jdk26ea
+# GitHub Copilot Instructions for homebrew-jextract
 
 ## Repository Overview
 This is a Homebrew tap for OpenJDK 26 Early Access builds with automated updates and releases.
@@ -186,9 +186,9 @@ Examples:
 ## Ruby/Homebrew Guidelines
 
 ### Before Committing
-1. Run `ruby -c Casks/jdk26ea.rb` to validate syntax
-2. Run `brew style Casks/jdk26ea.rb` to check style
-3. Run `brew audit --cask Casks/jdk26ea.rb` to audit
+1. Run `ruby -c Casks/jextract.rb` to validate syntax
+2. Run `brew style Casks/jextract.rb` to check style
+3. Run `brew audit --cask Casks/jextract.rb` to audit
 
 ### Cask Security Rules
 - Use `realpath` to resolve all paths
@@ -228,8 +228,8 @@ Pin ALL third-party actions to commit SHAs:
 - Fail workflow if verification fails
 
 ## File Naming Conventions
-- Cask file: `Casks/jdk26ea.rb`
-- Formula file: `Formula/jdk26ea.rb`
+- Cask file: `Casks/jextract.rb`
+- Formula file: `Formula/jextract.rb`
 - Workflows: `.github/workflows/*.yml`
 - Scripts: `scripts/*.sh`
 
@@ -242,7 +242,7 @@ Pin ALL third-party actions to commit SHAs:
 ## Common Patterns
 
 ### Update Version
-1. Update version in both Casks/jdk26ea.rb and Formula/jdk26ea.rb
+1. Update version in both Casks/jextract.rb and Formula/jextract.rb
 2. Update SHA256 for all 4 platforms (macOS ARM64/x64, Linux ARM64/x64)
 3. Validate syntax
 4. Commit: `feat: update to JDK 26 EA Build XX`
@@ -271,7 +271,7 @@ echo ""
 echo "Setting up Cursor..."
 
 cat > .cursorrules << 'EOF'
-# Cursor Rules for homebrew-jdk26ea
+# Cursor Rules for homebrew-jextract
 
 You are working on a Homebrew tap for OpenJDK 26 Early Access builds.
 
@@ -295,12 +295,12 @@ Scopes: cask, formula, workflow, docs, scripts
 - Use minimal permissions
 
 ## Testing
-- Validate syntax: `ruby -c Casks/jdk26ea.rb`
-- Style check: `brew style Casks/jdk26ea.rb`
-- Audit: `brew audit --cask Casks/jdk26ea.rb`
+- Validate syntax: `ruby -c Casks/jextract.rb`
+- Style check: `brew style Casks/jextract.rb`
+- Audit: `brew audit --cask Casks/jextract.rb`
 
 ## Repository-Specific
-- Current version in Casks/jdk26ea.rb and Formula/jdk26ea.rb
+- Current version in Casks/jextract.rb and Formula/jextract.rb
 - Update both files together
 - Update all 4 platform checksums (macOS ARM64/x64, Linux ARM64/x64)
 - Don't update README manually (auto-updated by release workflow)

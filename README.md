@@ -1,72 +1,68 @@
-# homebrew-jdk26valhalla
+# homebrew-jextract
 
-Homebrew tap for JDK 26 Project Valhalla builds with automated updates, CI/CD, and support for both macOS and Linux.
+Homebrew tap for Jextract - the tool to mechanically generate Java bindings from native library headers. Includes automated updates, CI/CD, and support for both macOS and Linux.
 
-[![Release](https://github.com/Artagon/homebrew-jdk26valhalla/actions/workflows/release.yml/badge.svg)](https://github.com/Artagon/homebrew-jdk26valhalla/actions/workflows/release.yml)
-[![Validate](https://github.com/Artagon/homebrew-jdk26valhalla/actions/workflows/validate.yml/badge.svg)](https://github.com/Artagon/homebrew-jdk26valhalla/actions/workflows/validate.yml)
+[![Release](https://github.com/Artagon/homebrew-jextract/actions/workflows/release.yml/badge.svg)](https://github.com/Artagon/homebrew-jextract/actions/workflows/release.yml)
+[![Validate](https://github.com/Artagon/homebrew-jextract/actions/workflows/validate.yml/badge.svg)](https://github.com/Artagon/homebrew-jextract/actions/workflows/validate.yml)
 [![License: GPL v2 with Classpath Exception](https://img.shields.io/badge/License-GPL_v2--with--Classpath--Exception-blue.svg)](https://openjdk.java.net/legal/gplv2+ce.html)
 
-## About Project Valhalla
+## About Jextract
 
-[Project Valhalla](https://openjdk.org/projects/valhalla/) is an OpenJDK project focused on improving Java's performance and memory efficiency through fundamental language enhancements.
+[Jextract](https://jdk.java.net/jextract/) is a tool which mechanically generates Java bindings from native library headers. This means you can call native C libraries from Java without writing any JNI code.
 
-### What Does Valhalla Provide?
+### What Does Jextract Provide?
 
-**Value Classes and Objects ([JEP 401](https://openjdk.org/jeps/401))** - The cornerstone of Project Valhalla:
-- **Value Classes**: New type of class that represents pure data without object identity
-- **Flattened Memory Layout**: Value objects stored directly in memory without indirection (no object header overhead)
-- **Improved Cache Locality**: Better CPU cache performance through memory layout control
-- **Zero-Cost Abstraction**: High-level abstractions without runtime overhead
-- **Enhanced Generics**: Support for specialized generics over primitive and value types
+- **Automatic Java Bindings**: Generate Java code to call C libraries directly
+- **Type-Safe Access**: Strong typing for native library interfaces
+- **Foreign Function & Memory API**: Uses modern Java FFM API (JEP 454)
+- **Header Parsing**: Parses C header files using libclang
+- **No Manual JNI**: Eliminates the need for hand-written JNI code
 
-### Performance Benefits
+### Key Benefits
 
-- **Reduced Memory Footprint**: Value objects eliminate object headers, reducing memory usage by 50-80% for small objects
-- **Improved Cache Performance**: Direct memory layout means fewer cache misses
-- **Better GC Performance**: Fewer object references mean less garbage collection pressure
-- **Faster Array Operations**: Arrays of value types stored contiguously without indirection
+- **Productivity**: Generate bindings automatically instead of writing JNI by hand
+- **Safety**: Type-safe access to native code through Java's Foreign Function & Memory API
+- **Maintainability**: Regenerate bindings when native library headers change
+- **Performance**: Direct access to native code with minimal overhead
 
 ### Use Cases
 
-Valhalla is particularly beneficial for:
-- High-performance computing and scientific applications
-- Financial systems requiring low latency
-- Game engines and graphics processing
-- Big data processing and analytics
-- Any application with large collections of small objects (e.g., Point, Complex, Vector2D)
-
-This tap provides the latest Project Valhalla early-access builds implementing [JEP 401](https://openjdk.org/jeps/401).
+Jextract is particularly useful for:
+- Interfacing with existing C libraries from Java
+- Systems programming in Java
+- Calling OS-specific APIs
+- Wrapping native libraries for Java applications
+- High-performance computing requiring native code access
 
 ## Quick Start
+
+### Formula Installation (macOS/Linux) - Recommended
+
+```bash
+brew tap Artagon/jextract
+brew install jextract
+```
+
+The formula installation creates symlinks in your Homebrew bin directory, making jextract available in your PATH.
 
 ### Cask Installation (macOS)
 
 ```bash
-brew tap Artagon/jdk26valhalla
-brew install --cask jdk26valhalla
+brew tap Artagon/jextract
+brew install --cask jextract
 ```
 
-The cask installation places JDK in `/Library/Java/JavaVirtualMachines/jdk-26-valhalla.jdk` and integrates with macOS's Java management system.
-
-### Formula Installation (macOS/Linux)
-
-```bash
-brew tap Artagon/jdk26valhalla
-brew install jdk26valhalla
-```
-
-The formula installation creates symlinks in your Homebrew bin directory.
+The cask installation places jextract in `/Library/Java/JavaVirtualMachines/jextract-25.jdk` and integrates with macOS's Java management system.
 
 ## Current Version
 
-**JDK 26 Valhalla Build 26-jep401ea2+1-1** (Released: 2025-10-10)
+**Jextract Build 25-jextract+1-1** (Released: 2025-09-25)
 
-This build implements:
-- JEP 401: Value Classes and Objects
+Based on JDK 25.
 
 ## Features
 
-- **Automatic Updates**: Weekly checks for new Valhalla builds with automated formula/cask updates
+- **Automatic Updates**: Weekly checks for new jextract builds with automated formula/cask updates
 - **Multi-Platform Support**:
   - macOS: ARM64 (Apple Silicon) and x64 (Intel)
   - Linux: ARM64 (aarch64) and x64
@@ -88,56 +84,64 @@ This build implements:
 
 ## Usage
 
-### Setting JAVA_HOME
+### Basic Usage
 
-After installation, you may want to set `JAVA_HOME`:
+After installation, jextract will be available in your PATH:
 
-**For cask installation:**
 ```bash
-export JAVA_HOME="/Library/Java/JavaVirtualMachines/jdk-26-valhalla.jdk/Contents/Home"
+# Check version
+jextract --version
+
+# Generate bindings for a C library
+jextract --source --output src -t org.example myheader.h
+
+# Get help
+jextract --help
 ```
 
-**For formula installation:**
+### Example: Binding to stdio.h
+
 ```bash
-export JAVA_HOME="$(brew --prefix jdk26valhalla)"
+# Generate Java bindings for stdio.h
+jextract --source -t org.unix -I /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include /usr/include/stdio.h
+
+# Use the generated bindings in your Java code
+javac --enable-preview --release 25 YourCode.java
+java --enable-preview YourCode
 ```
 
 ### Verifying Installation
 
+**For formula installation:**
 ```bash
-java -version
-# Should output: openjdk version "26-jep401ea2" ...
+which jextract
+# Should show: /opt/homebrew/bin/jextract (or similar)
 ```
 
-### Using Value Classes (JEP 401)
-
-Project Valhalla introduces value classes that provide better performance and memory efficiency:
-
-```java
-// Enable preview features to use value classes
-javac --enable-preview --release 26 MyValueClass.java
-java --enable-preview MyValueClass
+**For cask installation:**
+```bash
+/Library/Java/JavaVirtualMachines/jextract-25.jdk/Contents/Home/bin/jextract --version
 ```
 
 ## Updating
 
-The tap is automatically updated with new Valhalla builds. To update to the latest version:
+The tap is automatically updated with new jextract builds. To update to the latest version:
 
 ```bash
 brew update
-brew upgrade jdk26valhalla  # or brew upgrade --cask jdk26valhalla
+brew upgrade jextract  # or brew upgrade --cask jextract
 ```
 
 ## Issue Reporting
 
-Found a problem? [Open an issue](https://github.com/Artagon/homebrew-jdk26valhalla/issues/new/choose) using our issue templates.
+Found a problem? [Open an issue](https://github.com/Artagon/homebrew-jextract/issues/new/choose) using our issue templates.
 
 ## Automated Updates
 
-This repository uses GitHub Actions to automatically maintain the latest Valhalla builds:
+This repository uses GitHub Actions to automatically maintain the latest jextract builds:
 
 ### Update Workflow
-1. **Weekly Checks** (Sundays at 12:00 UTC): Automated script checks [jdk.java.net/valhalla](https://jdk.java.net/valhalla/) for new builds
+1. **Weekly Checks** (Sundays at 12:00 UTC): Automated script checks [jdk.java.net/jextract](https://jdk.java.net/jextract/) for new builds
 2. **Multi-Platform Download**: Downloads and verifies binaries for all supported platforms:
    - macOS: ARM64 and x64
    - Linux: ARM64 and x64
@@ -146,7 +150,7 @@ This repository uses GitHub Actions to automatically maintain the latest Valhall
 5. **CI/CD Validation**: Runs comprehensive tests across all platforms:
    - Syntax validation for Ruby code
    - Installation tests on macOS 13, macOS 14, Ubuntu 22.04, Ubuntu 24.04
-   - Runtime verification (Java version check and basic compilation)
+   - Runtime verification (jextract version check)
 6. **Auto-Merge**: PR automatically merges after passing all tests
 7. **GitHub Release**: Creates tagged release with version notes
 
@@ -154,41 +158,31 @@ This repository uses GitHub Actions to automatically maintain the latest Valhall
 You can manually trigger an update check:
 ```bash
 # Via GitHub CLI
-gh workflow run update.yml -R Artagon/homebrew-jdk26valhalla
+gh workflow run update.yml -R Artagon/homebrew-jextract
 ```
 
-Or visit the [Actions tab](https://github.com/Artagon/homebrew-jdk26valhalla/actions/workflows/update.yml) and click "Run workflow".
+Or visit the [Actions tab](https://github.com/Artagon/homebrew-jextract/actions/workflows/update.yml) and click "Run workflow".
 
-## Project Valhalla Resources
+## Jextract Resources
 
 ### Official Documentation
-- **[JEP 401: Value Classes and Objects](https://openjdk.org/jeps/401)** - Official JEP specification for value types
-- **[Project Valhalla Home](https://openjdk.org/projects/valhalla/)** - Main project page with overview and goals
-- **[Early Access Downloads](https://jdk.java.net/valhalla/)** - Official download page for Valhalla builds
-- **[Early Access Build Info](https://openjdk.org/projects/valhalla/early-access)** - Build information and release notes
+- **[Jextract Home](https://jdk.java.net/jextract/)** - Official download page
+- **[JEP 454: Foreign Function & Memory API](https://openjdk.org/jeps/454)** - The underlying API used by jextract
+- **[Panama Project](https://openjdk.org/projects/panama/)** - Parent project for foreign function support
 
-### Technical Specifications
-- **[Latest JEP 401 Specification](http://cr.openjdk.java.net/~dlsmith/jep401/latest)** - Detailed technical specification and implementation notes
-- **[API Documentation](https://download.java.net/java/early_access/valhalla/26/docs/api/)** - JavaDoc for Valhalla early-access builds
-- **[State of Valhalla (Brian Goetz)](https://cr.openjdk.java.net/~briangoetz/valhalla/sov/)** - Series of documents explaining Valhalla's design and evolution
-- **[Valhalla Mailing List Archives](https://mail.openjdk.org/pipermail/valhalla-dev/)** - Development discussions and technical details
+### Getting Started
+- **[Jextract Samples](https://github.com/openjdk/jextract)** - Example code and documentation
+- **[Foreign Function & Memory API Guide](https://docs.oracle.com/en/java/javase/22/core/foreign-function-and-memory-api.html)** - Official guide for using the FFM API
 
-### Talks and Presentations
-- **[Introduction to Project Valhalla](https://openjdk.org/projects/valhalla/)** - Getting started with value types
-- **[Java Language Futures (Brian Goetz)](https://www.youtube.com/results?search_query=brian+goetz+valhalla)** - Conference talks about Valhalla
-- **[OpenJDK Valhalla Updates](https://wiki.openjdk.org/display/valhalla)** - Wiki with status updates and design documents
+### Technical Details
+- Uses libclang to parse C header files
+- Generates Java code using the Foreign Function & Memory API
+- Requires JDK 21 or later with preview features enabled
 
-### Community and Support
-- **[Valhalla Dev Mailing List](https://mail.openjdk.org/mailman/listinfo/valhalla-dev)** - Join the development discussion
-- **[OpenJDK Wiki - Valhalla](https://wiki.openjdk.org/display/valhalla)** - Design documents and specifications
-- **[GitHub Discussions](https://github.com/Artagon/homebrew-jdk26valhalla/discussions)** - Ask questions about this tap
-
-### Experimental Features
-Remember that Valhalla builds include preview features requiring the `--enable-preview` flag:
-```bash
-javac --enable-preview --release 26 YourCode.java
-java --enable-preview YourClass
-```
+### Important Notes
+- Jextract generates code that uses preview features, requiring the `--enable-preview` flag
+- The generated bindings are specific to the platform and C library version
+- Regenerate bindings when native library headers change
 
 ## License
 
@@ -196,16 +190,14 @@ This tap is distributed under the same license as OpenJDK (GPL-2.0 with Classpat
 
 ## Disclaimer
 
-These are early-access builds provided for testing and development purposes. They implement experimental features that are subject to change. They are not intended for production use. For production environments, please use stable JDK releases.
+Jextract is an early-access tool provided for testing and development purposes. The tool and its generated APIs may change in future releases. For production use, consider the maturity level and stability requirements of your project.
 
-**Important:** Project Valhalla builds include preview features that require the `--enable-preview` flag to use. The APIs and language features are subject to change in future releases.
+**Important:** Jextract requires preview features to be enabled with the `--enable-preview` flag. The APIs and tooling are subject to change in future releases.
 
 ## Links
 
-- [JDK 26 Valhalla Downloads](https://jdk.java.net/valhalla/)
-- [JEP 401: Value Classes and Objects](https://openjdk.org/jeps/401)
-- [OpenJDK Project Valhalla](https://openjdk.org/projects/valhalla/)
-- [Project Valhalla Early Access](https://openjdk.org/projects/valhalla/early-access)
-- [Latest JEP 401 Specification](http://cr.openjdk.java.net/~dlsmith/jep401/latest)
-- [Valhalla API Documentation](https://download.java.net/java/early_access/valhalla/26/docs/api/)
+- [Jextract Downloads](https://jdk.java.net/jextract/)
+- [OpenJDK Project Panama](https://openjdk.org/projects/panama/)
+- [JEP 454: Foreign Function & Memory API](https://openjdk.org/jeps/454)
+- [Jextract GitHub](https://github.com/openjdk/jextract)
 - [Homebrew Documentation](https://docs.brew.sh/)

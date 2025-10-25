@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Update JDK 26 EA cask and formula to the latest build
+# Update jextract cask and formula to the latest build
 set -euo pipefail
 
 # Colors for output
@@ -10,11 +10,11 @@ NC='\033[0m' # No Color
 
 # Directories
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-FORMULA="$ROOT/Formula/jdk26ea.rb"
-CASK="$ROOT/Casks/jdk26ea.rb"
+FORMULA="$ROOT/Formula/jextract.rb"
+CASK="$ROOT/Casks/jextract.rb"
 
-# JDK page URL
-JDK_PAGE="https://jdk.java.net/26/"
+# Jextract page URL
+JEXTRACT_PAGE="https://jdk.java.net/jextract/"
 
 log_info() {
     echo -e "${GREEN}[INFO]${NC} $*"
@@ -28,28 +28,24 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $*"
 }
 
-# Fetch the JDK page and extract build number
-log_info "Fetching latest JDK 26 EA build information from $JDK_PAGE"
-page_content=$(curl -fsSL "$JDK_PAGE" 2>/dev/null || {
-    log_error "Failed to fetch JDK page"
+# Fetch the jextract page and extract build information
+log_info "Fetching latest jextract build information from $JEXTRACT_PAGE"
+page_content=$(curl -fsSL "$JEXTRACT_PAGE" 2>/dev/null || {
+    log_error "Failed to fetch jextract page"
     exit 1
 })
 
-# Extract build number from page
-build_number=$(printf '%s\n' "$page_content" | awk '
-    match($0, /Build ([0-9]+)/, m) {
-        print m[1]
-        exit
-    }
-')
+# Extract version from page (e.g., "25-jextract+1-1")
+version=$(printf '%s\n' "$page_content" | grep -o '[0-9]\+-jextract+[0-9]\+-[0-9]\+' | head -1)
+# Extract build number (the number after "/jextract/25/")
+build_number=$(printf '%s\n' "$page_content" | grep -o 'jextract/25/\([0-9]\+\)' | sed 's/jextract\/25\///' | head -1)
 
-if [[ -z "$build_number" ]]; then
-    log_error "Could not extract build number from JDK page"
+if [[ -z "$version" || -z "$build_number" ]]; then
+    log_error "Could not extract version or build number from jextract page"
     exit 1
 fi
 
-cask_version="26-ea+${build_number},${build_number}"
-version="26-ea+${build_number}"
+cask_version="${version},${build_number}"
 log_info "Latest build: $version (cask version key: $cask_version)"
 
 # Get current version from cask
@@ -63,7 +59,7 @@ if [[ "$cask_version" == "$current_version" ]]; then
 fi
 
 # Define download URLs
-base_url="https://download.java.net/java/early_access/jdk26/${build_number}/GPL"
+base_url="https://download.java.net/java/early_access/jextract/25/${build_number}"
 mac_arm_url="${base_url}/openjdk-${version}_macos-aarch64_bin.tar.gz"
 mac_x64_url="${base_url}/openjdk-${version}_macos-x64_bin.tar.gz"
 linux_arm_url="${base_url}/openjdk-${version}_linux-aarch64_bin.tar.gz"
@@ -129,10 +125,10 @@ sed -i.tmp "s/version \".*\"/version \"$version\"/" "$FORMULA"
 
 # Update all URLs
 sed -i.tmp \
-    -e "s|https://download.java.net/java/early_access/jdk26/[0-9]*/GPL/openjdk-.*_macos-aarch64_bin.tar.gz|${mac_arm_url}|g" \
-    -e "s|https://download.java.net/java/early_access/jdk26/[0-9]*/GPL/openjdk-.*_macos-x64_bin.tar.gz|${mac_x64_url}|g" \
-    -e "s|https://download.java.net/java/early_access/jdk26/[0-9]*/GPL/openjdk-.*_linux-aarch64_bin.tar.gz|${linux_arm_url}|g" \
-    -e "s|https://download.java.net/java/early_access/jdk26/[0-9]*/GPL/openjdk-.*_linux-x64_bin.tar.gz|${linux_x64_url}|g" \
+    -e "s|https://download.java.net/java/early_access/jextract/25/[0-9]*/GPL/openjdk-.*_macos-aarch64_bin.tar.gz|${mac_arm_url}|g" \
+    -e "s|https://download.java.net/java/early_access/jextract/25/[0-9]*/GPL/openjdk-.*_macos-x64_bin.tar.gz|${mac_x64_url}|g" \
+    -e "s|https://download.java.net/java/early_access/jextract/25/[0-9]*/GPL/openjdk-.*_linux-aarch64_bin.tar.gz|${linux_arm_url}|g" \
+    -e "s|https://download.java.net/java/early_access/jextract/25/[0-9]*/GPL/openjdk-.*_linux-x64_bin.tar.gz|${linux_x64_url}|g" \
     "$FORMULA"
 
 # Update checksums in formula

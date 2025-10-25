@@ -126,8 +126,8 @@ jobs:
               release_date = datetime.date.today().isoformat()
 
           text = readme_path.read_text()
-          pattern = r"\*\*JDK 26 EA Build \d+\*\* \(Released: [0-9-]*\)"
-          replacement = f"**JDK 26 EA Build {build}** (Released: {release_date})"
+          pattern = r"\*\*Jextract EA Build \d+\*\* \(Released: [0-9-]*\)"
+          replacement = f"**Jextract EA Build {build}** (Released: {release_date})"
           new_text, count = re.subn(pattern, replacement, text, count=1)
           if count != 1:
               print("Failed to update README version banner", file=sys.stderr)
@@ -147,10 +147,10 @@ jobs:
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "docs: update README to JDK 26 EA Build ${{ steps.version.outputs.build }}"
-          title: "docs: update README to JDK 26 EA Build ${{ steps.version.outputs.build }}"
+          commit-message: "docs: update README to Jextract EA Build ${{ steps.version.outputs.build }}"
+          title: "docs: update README to Jextract EA Build ${{ steps.version.outputs.build }}"
           body: |
-            This PR updates README.md to reflect JDK 26 EA Build ${{ steps.version.outputs.build }} (released ${{ steps.update_readme.outputs.release_date }}).
+            This PR updates README.md to reflect Jextract EA Build ${{ steps.version.outputs.build }} (released ${{ steps.update_readme.outputs.release_date }}).
           branch: release/readme-${{ steps.version.outputs.build }}
           delete-branch: true
 
@@ -198,7 +198,7 @@ jobs:
             "spdxVersion": "SPDX-2.3",
             "dataLicense": "CC0-1.0",
             "SPDXID": "SPDXRef-DOCUMENT",
-            "name": "JDK 26 Valhalla EA Build ${BUILD}",
+            "name": "Jextract Valhalla EA Build ${BUILD}",
             "documentNamespace": "https://github.com/${{ github.repository }}/releases/tag/v${VERSION}",
             "creationInfo": {
               "created": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
@@ -245,12 +245,12 @@ jobs:
         uses: softprops/action-gh-release@de2c0eb89ae2a093876385947365aca7b0e5f844
         with:
           tag_name: v${{ steps.version.outputs.version }}
-          name: JDK 26 EA Build ${{ steps.version.outputs.build }}
+          name: Jextract EA Build ${{ steps.version.outputs.build }}
           files: ${{ steps.sbom.outputs.sbom_file }}
           body: |
-            # JDK 26 Early Access Build ${{ steps.version.outputs.build }}
+            # Jextract Early Access Build ${{ steps.version.outputs.build }}
 
-            OpenJDK 26 Early Access build from [jdk.java.net/26](${{ steps.jdk_notes.outputs.notes_url }})
+            OpenJextract Early Access build from [jdk.java.net/26](${{ steps.jdk_notes.outputs.notes_url }})
 
             ## Installation
 
@@ -282,7 +282,7 @@ jobs:
 
             ## Links
 
-            - [OpenJDK JDK 26 EA Downloads](https://jdk.java.net/26/)
+            - [OpenJDK Jextract EA Downloads](https://jdk.java.net/26/)
             - [OpenJDK Project](https://openjdk.org/)
 
             ---

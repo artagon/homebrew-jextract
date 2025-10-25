@@ -1,0 +1,31 @@
+class Jextract < Formula
+  desc "Tool to mechanically generate Java bindings from native library headers"
+  homepage "https://jdk.java.net/jextract/"
+  version "25-jextract+1-1"
+  on_macos do
+    if Hardware::CPU.arm?
+      url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_macos-aarch64_bin.tar.gz"
+      sha256 "6783d2ba7f686ee636b9542525ee06b7bd096dfca294538613b877a4b5a057da"
+    else
+      url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_macos-x64_bin.tar.gz"
+      sha256 "62fd0453349b8eb48f083d2fb9c5f2ab255f894eaa8c658221366f363c7e91b9"
+    end
+  end
+  on_linux do
+    if Hardware::CPU.arm?
+      url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_linux-aarch64_bin.tar.gz"
+      sha256 "75a199a05e5edade798600a175f8897e711330338f7d8d2da5fff18d707d665e"
+    else
+      url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_linux-x64_bin.tar.gz"
+      sha256 "d826d366b5db8edbed9cfef3779e45e43ba496ca2166b8f70cdaf81ee90c0b1e"
+    end
+  end
+  def install
+    libexec.install Dir["*"]
+    bin.install_symlink Dir["#{libexec}/bin/*"]
+  end
+  test do
+    output = shell_output("#{bin}/jextract --version 2>&1")
+    assert_match "jextract", output.downcase
+  end
+end

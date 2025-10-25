@@ -4,11 +4,11 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 TAP_USER="artagon"
-TAP_REPO="homebrew-jdk26ea"
+TAP_REPO="homebrew-jextract"
 TAP_FULL="${TAP_USER}/${TAP_REPO}"
-FORMULA_NAME="jdk26ea"
-FORMULA_FULL="${TAP_USER}/jdk26ea/${FORMULA_NAME}"
-CASK_FULL="${TAP_USER}/jdk26ea/${FORMULA_NAME}"
+FORMULA_NAME="jextract"
+FORMULA_FULL="${TAP_USER}/jextract/${FORMULA_NAME}"
+CASK_FULL="${TAP_USER}/jextract/${FORMULA_NAME}"
 
 log() {
   printf '==> %s\n' "$*"

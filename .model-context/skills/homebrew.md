@@ -10,28 +10,28 @@ Expert-level skills for developing secure, compliant Homebrew formulas and casks
 
 #### Stanza Ordering (Critical)
 ```ruby
-cask "jdk26ea" do
+cask "jextract" do
   # 1. Architecture declaration
   arch arm: "aarch64", intel: "x64"
 
   # 2. Version (MUST be second)
-  version "26-ea+20,20"
+  version "25-jextract+1-1,1"
 
   # 3. SHA256 (MUST come before url!)
   sha256 arm:   "dc75cdb507e47a66b0edc73d1cfc4a1c011078d5d0785c7660320d2e9c3e04d4",
          intel: "5f9c11b5e0d1e5c2e5d1e5c2e5d1e5c2e5d1e5c2e5d1e5c2e5d1e5c2e5d1e5c2"
 
   # 4. URL
-  url "https://download.java.net/java/early_access/jdk26/#{version.csv.second}/GPL/openjdk-#{version.csv.first}_macos-#{arch}_bin.tar.gz"
+  url "https://download.java.net/java/early_access/jextract/25/#{version.csv.second}/GPL/openjdk-#{version.csv.first}_macos-#{arch}_bin.tar.gz"
 
   # 5. Name
-  name "OpenJDK 26 Early Access"
+  name "Jextract Early Access"
 
   # 6. Description
-  desc "Early access builds of OpenJDK 26"
+  desc "Early access builds of Jextract"
 
   # 7. Homepage
-  homepage "https://jdk.java.net/26/"
+  homepage "https://jdk.java.net/jextract/"
 
   # 8. Postflight (installation logic)
   postflight do
@@ -39,7 +39,7 @@ cask "jdk26ea" do
   end
 
   # 9. Uninstall
-  uninstall delete: "/Library/Java/JavaVirtualMachines/jdk-26-ea.jdk"
+  uninstall delete: "/Library/Java/JavaVirtualMachines/jextract-25.jdk"
 end
 ```
 
@@ -54,27 +54,27 @@ end
 #### Basic Structure
 ```ruby
 class Jdk26ea < Formula
-  desc "Early access builds of OpenJDK 26"
-  homepage "https://jdk.java.net/26/"
-  version "26-ea+20"
+  desc "Early access builds of Jextract"
+  homepage "https://jdk.java.net/jextract/"
+  version "25-jextract+1-1"
 
   # Platform-specific URLs and checksums
   on_macos do
     if Hardware::CPU.arm?
-      url "https://download.java.net/java/early_access/jdk26/20/GPL/openjdk-26-ea+20_macos-aarch64_bin.tar.gz"
+      url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_macos-aarch64_bin.tar.gz"
       sha256 "dc75cdb507e47a66b0edc73d1cfc4a1c011078d5d0785c7660320d2e9c3e04d4"
     else
-      url "https://download.java.net/java/early_access/jdk26/20/GPL/openjdk-26-ea+20_macos-x64_bin.tar.gz"
+      url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_macos-x64_bin.tar.gz"
       sha256 "5f9c11b5e0d1e5c2e5d1e5c2e5d1e5c2e5d1e5c2e5d1e5c2e5d1e5c2e5d1e5c2"
     end
   end
 
   on_linux do
     if Hardware::CPU.arm?
-      url "https://download.java.net/java/early_access/jdk26/20/GPL/openjdk-26-ea+20_linux-aarch64_bin.tar.gz"
+      url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_linux-aarch64_bin.tar.gz"
       sha256 "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2"
     else
-      url "https://download.java.net/java/early_access/jdk26/20/GPL/openjdk-26-ea+20_linux-x64_bin.tar.gz"
+      url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_linux-x64_bin.tar.gz"
       sha256 "f2e1d0c9b8a7z6y5x4w3v2u1t0s9r8q7p6o5n4m3l2k1j0i9h8g7f6e5d4c3b2a1"
     end
   end
@@ -116,7 +116,7 @@ postflight do
   odie "Resolved JDK path escapes staging area" unless jdk_src.to_s.start_with?(staged_root.to_s)
 
   # Step 6: Define secure target
-  jdk_target = Pathname("/Library/Java/JavaVirtualMachines/jdk-26-ea.jdk")
+  jdk_target = Pathname("/Library/Java/JavaVirtualMachines/jextract-25.jdk")
 
   # Step 7: Remove existing installation if present
   if jdk_target.exist?
@@ -192,7 +192,7 @@ odie "Expected exactly one JDK bundle, found #{count}"
 odie "Path escapes staging area"
 
 # Informational messages
-ohai "Installing JDK 26 EA to #{target}"
+ohai "Installing Jextract to #{target}"
 ohai "Removing existing installation"
 
 # Warnings (non-fatal)
@@ -206,7 +206,7 @@ opoo "Using non-standard installation path"
 ```ruby
 # ✅ CORRECT - Both HTTPS and SHA256
 sha256 "dc75cdb507e47a66b0edc73d1cfc4a1c011078d5d0785c7660320d2e9c3e04d4"
-url "https://download.java.net/java/early_access/jdk26/20/GPL/openjdk-26-ea+20_macos-aarch64_bin.tar.gz"
+url "https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_macos-aarch64_bin.tar.gz"
 
 # ❌ FORBIDDEN - No checksum
 url "https://example.com/file.tar.gz"  # DANGEROUS!
@@ -231,21 +231,21 @@ sha256 ENV['CHECKSUM']  # Insecure
 #### Pre-Commit Validation
 ```bash
 # Syntax validation
-ruby -c Casks/jdk26ea.rb
-ruby -c Formula/jdk26ea.rb
+ruby -c Casks/jextract.rb
+ruby -c Formula/jextract.rb
 
 # Style checking
-brew style Casks/jdk26ea.rb
-brew style Formula/jdk26ea.rb
+brew style Casks/jextract.rb
+brew style Formula/jextract.rb
 
 # Audit checks
-brew audit --cask Casks/jdk26ea.rb
-brew audit --formula Formula/jdk26ea.rb
+brew audit --cask Casks/jextract.rb
+brew audit --formula Formula/jextract.rb
 
 # Install test (local)
-brew install --cask Casks/jdk26ea.rb
+brew install --cask Casks/jextract.rb
 java -version
-brew uninstall --cask jdk26ea
+brew uninstall --cask jextract
 ```
 
 #### Common RuboCop Issues
@@ -270,7 +270,7 @@ if condition && !other_condition  # CORRECT
 
 #### macOS Architecture Handling
 ```ruby
-cask "jdk26ea" do
+cask "jextract" do
   # Modern arch syntax (Homebrew 4.0+)
   arch arm: "aarch64", intel: "x64"
 
@@ -300,18 +300,18 @@ end
 
 #### Version String Parsing
 ```ruby
-# Version format: "26-ea+20,20"
-# First part: JDK version (26-ea+20)
+# Version format: "25-jextract+1-1,20"
+# First part: JDK version (25-jextract+1-1)
 # Second part: Build number (20)
 
-version "26-ea+20,20"
+version "25-jextract+1-1,20"
 
 # Access components
-version.csv.first   # "26-ea+20"
+version.csv.first   # "25-jextract+1-1"
 version.csv.second  # "20"
 
 # Use in URLs
-url "https://download.java.net/java/early_access/jdk26/#{version.csv.second}/GPL/openjdk-#{version.csv.first}_macos-#{arch}_bin.tar.gz"
+url "https://download.java.net/java/early_access/jextract/25/#{version.csv.second}/GPL/openjdk-#{version.csv.first}_macos-#{arch}_bin.tar.gz"
 ```
 
 ### 10. Best Practices Checklist
@@ -334,20 +334,20 @@ url "https://download.java.net/java/early_access/jdk26/#{version.csv.second}/GPL
 ### Pattern: Multi-Platform Updates
 ```bash
 # 1. Update version in both files
-vim Casks/jdk26ea.rb    # Line 2
-vim Formula/jdk26ea.rb  # Line 4
+vim Casks/jextract.rb    # Line 2
+vim Formula/jextract.rb  # Line 4
 
 # 2. Download and verify ALL checksums
 for platform in macos-aarch64 macos-x64 linux-aarch64 linux-x64; do
-  url="https://download.java.net/java/early_access/jdk26/20/GPL/openjdk-26-ea+20_${platform}_bin.tar.gz"
+  url="https://download.java.net/java/early_access/jextract/25/1/openjdk-25-jextract+1-1_${platform}_bin.tar.gz"
   curl -fsSL "${url}.sha256" | awk '{print $1}'
 done
 
 # 3. Update checksums in both files
 # 4. Validate all changes
-brew style Casks/jdk26ea.rb Formula/jdk26ea.rb
-brew audit --cask Casks/jdk26ea.rb
-brew audit --formula Formula/jdk26ea.rb
+brew style Casks/jextract.rb Formula/jextract.rb
+brew audit --cask Casks/jextract.rb
+brew audit --formula Formula/jextract.rb
 ```
 
 ### Pattern: Secure File Operations

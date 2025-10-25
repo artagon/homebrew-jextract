@@ -1,4 +1,4 @@
-name: Auto Update JDK 26 EA
+name: Auto Update Jextract EA
 
 on:
   schedule:
@@ -16,11 +16,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Fetch latest JDK 26 EA version
+      - name: Fetch latest Jextract EA version
         id: fetch_version
         run: |
           set -euo pipefail
-          # Fetch the JDK 26 EA page and extract the latest build number
+          # Fetch the Jextract EA page and extract the latest build number
           page=$(curl -fsSL "https://jdk.java.net/26/")
 
           # Extract build number from the page
@@ -154,12 +154,12 @@ jobs:
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          commit-message: "chore: update to JDK 26 EA Build ${{ steps.fetch_version.outputs.build }}"
-          title: "chore: update to JDK 26 EA Build ${{ steps.fetch_version.outputs.build }}"
+          commit-message: "chore: update to Jextract EA Build ${{ steps.fetch_version.outputs.build }}"
+          title: "chore: update to Jextract EA Build ${{ steps.fetch_version.outputs.build }}"
           body: |
             ## Automated Update
 
-            This PR updates the JDK 26 EA cask and formula to Build ${{ steps.fetch_version.outputs.build }}.
+            This PR updates the Jextract EA cask and formula to Build ${{ steps.fetch_version.outputs.build }}.
 
             ### Changes
             - Updated version from `26-ea+${{ steps.fetch_version.outputs.current_build }}` to `26-ea+${{ steps.fetch_version.outputs.build }}`

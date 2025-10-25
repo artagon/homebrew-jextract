@@ -1,9 +1,9 @@
-name: Update JDK 26 EA
+name: Update Jextract
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'  # Daily at midnight UTC
+    - cron: '0 12 * * 0'  # Weekly on Sunday at 12:00 UTC
 
 permissions:
   contents: write
@@ -15,28 +15,28 @@ jobs:
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
 
-      - name: Cache JDK downloads
+      - name: Cache jextract downloads
         uses: actions/cache@v4
         with:
-          path: /tmp/jdk-cache
-          key: jdk26-valhalla-${{ github.run_id }}
+          path: /tmp/jextract-cache
+          key: jextract-${{ github.run_id }}
           restore-keys: |
-            jdk26-valhalla-
+            jextract-
 
-      - name: Fetch latest JDK 26 EA
+      - name: Fetch latest jextract build
         id: fetch
         run: |
           set -euo pipefail
           page_file=$(mktemp)
-          curl -fsSL https://jdk.java.net/26/ -o "$page_file"
+          curl -fsSL https://jdk.java.net/jextract/ -o "$page_file"
 
-          BUILD=$(grep -oE 'Build [0-9]+' "$page_file" | awk '{print $2}' | head -1)
-          if [[ -z "$BUILD" || ! "$BUILD" =~ ^[0-9]+$ ]]; then
-            echo "Failed to extract a valid build number"
+          VERSION=$(grep -oE '[0-9]+-jextract\+[0-9]+-[0-9]+' "$page_file" | head -1)
+          BUILD=$(grep -oP 'jextract/25/\K[0-9]+' "$page_file" | head -1)
+
+          if [[ -z "$VERSION" || -z "$BUILD" ]]; then
+            echo "Failed to extract version and build number"
             exit 1
           fi
-
-          VERSION="26-ea+${BUILD}"
 
           extract_url() {
             local pattern=$1
@@ -47,17 +47,17 @@ jobs:
               echo "Failed to locate download URL for ${label}"
               exit 1
             fi
-            if [[ ! "$url" =~ ^https://download\.java\.net/java/early_access/jdk26/${BUILD}/GPL/ ]]; then
+            if [[ ! "$url" =~ ^https://download\.java\.net/java/early_access/jextract/25/${BUILD}/ ]]; then
               echo "Unexpected download host for ${label}: $url"
               exit 1
             fi
             echo "$url"
           }
 
-          URL_MAC_ARM=$(extract_url "openjdk-26-ea\\+${BUILD}_macos-aarch64_bin\\.tar\\.gz" "macOS ARM")
-          URL_MAC_INTEL=$(extract_url "openjdk-26-ea\\+${BUILD}_macos-x64_bin\\.tar\\.gz" "macOS Intel")
-          URL_LINUX_ARM=$(extract_url "openjdk-26-ea\\+${BUILD}_linux-aarch64_bin\\.tar\\.gz" "Linux ARM")
-          URL_LINUX_X64=$(extract_url "openjdk-26-ea\\+${BUILD}_linux-x64_bin\\.tar\\.gz" "Linux x64")
+          URL_MAC_ARM=$(extract_url "openjdk-${VERSION}_macos-aarch64_bin\\.tar\\.gz" "macOS ARM")
+          URL_MAC_INTEL=$(extract_url "openjdk-${VERSION}_macos-x64_bin\\.tar\\.gz" "macOS Intel")
+          URL_LINUX_ARM=$(extract_url "openjdk-${VERSION}_linux-aarch64_bin\\.tar\\.gz" "Linux ARM")
+          URL_LINUX_X64=$(extract_url "openjdk-${VERSION}_linux-x64_bin\\.tar\\.gz" "Linux x64")
 
           fetch_sha() {
             local url=$1
@@ -75,7 +75,7 @@ jobs:
             local url=$1
             local expected=$2
             local label=$3
-            local cache_dir="/tmp/jdk-cache"
+            local cache_dir="/tmp/jextract-cache"
             local filename=$(basename "$url")
             local cached_file="${cache_dir}/${filename}"
 
@@ -214,10 +214,10 @@ EOF
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@c5a7806660adbe173f04e3e038b0ccdcd758773c
         with:
-          commit-message: "Update JDK 26 EA to ${{ steps.fetch.outputs.version }}"
-          title: "Update JDK 26 EA to ${{ steps.fetch.outputs.version }}"
+          commit-message: "Update Jextract EA to ${{ steps.fetch.outputs.version }}"
+          title: "Update Jextract EA to ${{ steps.fetch.outputs.version }}"
           body: |
-            Auto-update JDK 26 EA to version ${{ steps.fetch.outputs.version }}
+            Auto-update Jextract EA to version ${{ steps.fetch.outputs.version }}
 
             - macOS ARM64: ${{ steps.fetch.outputs.url_mac_arm }}
             - macOS x64: ${{ steps.fetch.outputs.url_mac_intel }}
