@@ -170,6 +170,23 @@ Based on JDK 25.
 
 ## Usage
 
+### Shell Environment Configuration
+
+The formula installation creates shell environment scripts to automatically configure jextract for your shell. After installation, you'll see instructions to add one of the following to your shell profile:
+
+**For Bash** (`~/.bash_profile` or `~/.bashrc`):
+```bash
+# Recommended: Hardcode the Homebrew prefix to avoid slow shell startup
+# First, run this in your terminal to get the prefix:
+#   brew --prefix jextract
+# Then, use the output (e.g., /opt/homebrew or /usr/local) below:
+source /opt/homebrew/etc/profile.d/jextract.sh
+```
+
+These scripts will:
+- Set `JEXTRACT_HOME` environment variable pointing to the jextract installation
+- Ensure jextract's bin directory is in your PATH
+
 ### Basic Usage
 
 After installation, jextract will be available in your PATH:

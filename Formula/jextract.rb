@@ -21,9 +21,56 @@ class Jextract < Formula
     end
   end
   def install
-    # Install directly to prefix to preserve relative paths for bundled runtime
-    # The jextract script expects to find runtime/bin/java at ../runtime/bin/java
-    prefix.install Dir["*"]
+    # Install to libexec to preserve directory structure
+    libexec.install Dir["*"]
+
+    # Create wrapper script that sets JAVA_HOME for bundled runtime
+    (bin/"jextract").write_env_script libexec/"bin/jextract", JAVA_HOME: libexec
+
+    # Create shell environment configuration files
+    (prefix/"etc/profile.d").mkpath
+    (prefix/"etc/profile.d/jextract.sh").write <<~EOS
+      # jextract environment configuration
+      export JEXTRACT_HOME="#{libexec}"
+      case ":$PATH:" in
+        *:"#{bin}":*) ;;
+        *) export PATH="$PATH:#{bin}" ;;
+      esac
+    EOS
+
+    (prefix/"share/zsh/site-functions").mkpath
+    (prefix/"share/zsh/site-functions/jextract.zsh").write <<~EOS
+      # jextract environment configuration
+      export JEXTRACT_HOME="#{libexec}"
+      case ":$PATH:" in
+        *:"#{bin}":*) ;;
+        *) export PATH="$PATH:#{bin}" ;;
+      esac
+    EOS
+
+    (prefix/"share/fish/vendor_conf.d").mkpath
+    (prefix/"share/fish/vendor_conf.d/jextract.fish").write <<~EOS
+      # jextract environment configuration
+      set -gx JEXTRACT_HOME "#{libexec}"
+      fish_add_path "#{bin}"
+    EOS
+  end
+
+  def caveats
+    <<~EOS
+      To automatically configure your shell environment for jextract, add the following to your shell profile:
+
+      For Bash (~/.bash_profile or ~/.bashrc):
+        source "$(brew --prefix jextract)/etc/profile.d/jextract.sh"
+
+      For Zsh (~/.zshrc):
+        source "$(brew --prefix jextract)/share/zsh/site-functions/jextract.zsh"
+
+      For Fish (~/.config/fish/config.fish):
+        source (brew --prefix jextract)/share/fish/vendor_conf.d/jextract.fish
+
+      This will set JEXTRACT_HOME and ensure jextract is in your PATH.
+    EOS
   end
   test do
     output = shell_output("#{bin}/jextract --version 2>&1")
