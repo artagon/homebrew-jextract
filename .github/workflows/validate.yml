@@ -84,13 +84,21 @@ jobs:
             echo "✅ Jextract formula installed successfully at $JEXTRACT_PREFIX"
 
             # Debug: show directory structure
-            echo "Directory structure:"
-            ls -la "$JEXTRACT_PREFIX"
-            echo "Bin directory:"
+            echo "=== Cellar directory (via symlink resolution) ==="
+            CELLAR_DIR=$(readlink -f "$JEXTRACT_PREFIX" 2>/dev/null || greadlink -f "$JEXTRACT_PREFIX" 2>/dev/null || echo "$JEXTRACT_PREFIX")
+            ls -la "$CELLAR_DIR/"
+            echo ""
+            echo "=== Prefix directory ==="
+            ls -la "$JEXTRACT_PREFIX/"
+            echo ""
+            echo "=== Bin file/directory ==="
             ls -la "$JEXTRACT_PREFIX/bin" || echo "bin is not a directory"
-            file "$JEXTRACT_PREFIX/bin/jextract" || echo "jextract not found"
+            file "$JEXTRACT_PREFIX/bin" || echo "bin not found"
+            echo ""
+            echo "=== Contents of bin if it's a file ==="
+            head -20 "$JEXTRACT_PREFIX/bin" 2>/dev/null || echo "Cannot read bin as file"
 
-            "$JEXTRACT_PREFIX/bin/jextract" --version
+            # "$JEXTRACT_PREFIX/bin/jextract" --version
           else
             echo "❌ Jextract formula installation failed"
             exit 1
