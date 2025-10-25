@@ -21,8 +21,9 @@ class Jextract < Formula
     end
   end
   def install
-    libexec.install Dir["*"]
-    bin.write_env_script libexec/"bin/jextract", { JAVA_HOME: libexec }
+    # Install directly to prefix to preserve relative paths for bundled runtime
+    # The jextract script expects to find runtime/bin/java at ../runtime/bin/java
+    prefix.install Dir["*"]
   end
   test do
     output = shell_output("#{bin}/jextract --version 2>&1")
