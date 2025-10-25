@@ -117,7 +117,7 @@ jobs:
 
           # Update Formula
           sed -i "s/25-jextract+${current_build}/25-jextract+${build}/g" Formula/jextract.rb
-          sed -i "s|jdk26/${current_build}/GPL|jdk26/${build}/GPL|g" Formula/jextract.rb
+          sed -i "s|jextract/25/${current_build}/GPL|jextract/25/${build}/GPL|g" Formula/jextract.rb
 
           # Update checksums in Formula (supports both macOS and Linux ARM64/x64)
           awk -v mac_arm="${{ steps.checksums.outputs.sha_mac_arm }}" \
