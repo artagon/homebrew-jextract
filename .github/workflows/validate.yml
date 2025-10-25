@@ -58,20 +58,132 @@ jobs:
         run: |
           brew install --cask artagon/jextract/jextract
 
-      - name: Verify installation
+      - name: Verify cask installation
         run: |
           if [ -d "/Library/Java/JavaVirtualMachines/jextract-25.jdk" ]; then
-            echo "✅ Jextract installed successfully"
+            echo "✅ Jextract cask installed successfully"
             /Library/Java/JavaVirtualMachines/jextract-25.jdk/bin/jextract --version
           else
-            echo "❌ Jextract installation failed"
+            echo "❌ Jextract cask installation failed"
             exit 1
           fi
 
-      - name: Cleanup
+      - name: Cleanup cask
         if: always()
         run: |
           brew uninstall --cask artagon/jextract/jextract || true
+
+      - name: Test formula installation
+        run: |
+          brew install artagon/jextract/jextract
+
+      - name: Verify formula installation
+        run: |
+          JEXTRACT_PREFIX="$(brew --prefix jextract)"
+          if [ -d "$JEXTRACT_PREFIX" ]; then
+            echo "✅ Jextract formula installed successfully at $JEXTRACT_PREFIX"
+            "$JEXTRACT_PREFIX/bin/jextract" --version
+          else
+            echo "❌ Jextract formula installation failed"
+            exit 1
+          fi
+
+      - name: Verify shell configuration files exist
+        run: |
+          JEXTRACT_PREFIX="$(brew --prefix jextract)"
+
+          if [ -f "$JEXTRACT_PREFIX/etc/profile.d/jextract.sh" ]; then
+            echo "✅ Bash config file exists"
+          else
+            echo "❌ Bash config file missing"
+            exit 1
+          fi
+
+          if [ -f "$JEXTRACT_PREFIX/share/zsh/site-functions/jextract.zsh" ]; then
+            echo "✅ Zsh config file exists"
+          else
+            echo "❌ Zsh config file missing"
+            exit 1
+          fi
+
+          if [ -f "$JEXTRACT_PREFIX/share/fish/vendor_conf.d/jextract.fish" ]; then
+            echo "✅ Fish config file exists"
+          else
+            echo "❌ Fish config file missing"
+            exit 1
+          fi
+
+      - name: Install fish shell
+        run: |
+          brew install fish
+
+      - name: Test bash shell configuration
+        shell: bash
+        run: |
+          JEXTRACT_PREFIX="$(brew --prefix jextract)"
+          source "$JEXTRACT_PREFIX/etc/profile.d/jextract.sh"
+
+          if [ -z "$JEXTRACT_HOME" ]; then
+            echo "❌ JEXTRACT_HOME not set"
+            exit 1
+          fi
+
+          echo "✅ JEXTRACT_HOME=$JEXTRACT_HOME"
+
+          if ! command -v jextract &> /dev/null; then
+            echo "❌ jextract not in PATH"
+            exit 1
+          fi
+
+          echo "✅ jextract found in PATH"
+          jextract --version
+
+      - name: Test zsh shell configuration
+        shell: zsh {0}
+        run: |
+          JEXTRACT_PREFIX="$(brew --prefix jextract)"
+          source "$JEXTRACT_PREFIX/share/zsh/site-functions/jextract.zsh"
+
+          if [ -z "$JEXTRACT_HOME" ]; then
+            echo "❌ JEXTRACT_HOME not set"
+            exit 1
+          fi
+
+          echo "✅ JEXTRACT_HOME=$JEXTRACT_HOME"
+
+          if ! command -v jextract &> /dev/null; then
+            echo "❌ jextract not in PATH"
+            exit 1
+          fi
+
+          echo "✅ jextract found in PATH"
+          jextract --version
+
+      - name: Test fish shell configuration
+        shell: fish {0}
+        run: |
+          set JEXTRACT_PREFIX (brew --prefix jextract)
+          source "$JEXTRACT_PREFIX/share/fish/vendor_conf.d/jextract.fish"
+
+          if test -z "$JEXTRACT_HOME"
+            echo "❌ JEXTRACT_HOME not set"
+            exit 1
+          end
+
+          echo "✅ JEXTRACT_HOME=$JEXTRACT_HOME"
+
+          if not command -v jextract &> /dev/null
+            echo "❌ jextract not in PATH"
+            exit 1
+          end
+
+          echo "✅ jextract found in PATH"
+          jextract --version
+
+      - name: Cleanup formula
+        if: always()
+        run: |
+          brew uninstall --formula jextract || true
 
   test-install-linux:
     timeout-minutes: 30
@@ -133,6 +245,99 @@ jobs:
 
           # Test jextract help
           jextract --help
+
+      - name: Verify shell configuration files exist
+        run: |
+          JEXTRACT_PREFIX="$(brew --prefix jextract)"
+
+          if [ -f "$JEXTRACT_PREFIX/etc/profile.d/jextract.sh" ]; then
+            echo "✅ Bash config file exists"
+          else
+            echo "❌ Bash config file missing"
+            exit 1
+          fi
+
+          if [ -f "$JEXTRACT_PREFIX/share/zsh/site-functions/jextract.zsh" ]; then
+            echo "✅ Zsh config file exists"
+          else
+            echo "❌ Zsh config file missing"
+            exit 1
+          fi
+
+          if [ -f "$JEXTRACT_PREFIX/share/fish/vendor_conf.d/jextract.fish" ]; then
+            echo "✅ Fish config file exists"
+          else
+            echo "❌ Fish config file missing"
+            exit 1
+          fi
+
+      - name: Install zsh and fish shells
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh fish
+
+      - name: Test bash shell configuration
+        shell: bash
+        run: |
+          JEXTRACT_PREFIX="$(brew --prefix jextract)"
+          source "$JEXTRACT_PREFIX/etc/profile.d/jextract.sh"
+
+          if [ -z "$JEXTRACT_HOME" ]; then
+            echo "❌ JEXTRACT_HOME not set"
+            exit 1
+          fi
+
+          echo "✅ JEXTRACT_HOME=$JEXTRACT_HOME"
+
+          if ! command -v jextract &> /dev/null; then
+            echo "❌ jextract not in PATH"
+            exit 1
+          fi
+
+          echo "✅ jextract found in PATH"
+          jextract --version
+
+      - name: Test zsh shell configuration
+        shell: zsh {0}
+        run: |
+          JEXTRACT_PREFIX="$(brew --prefix jextract)"
+          source "$JEXTRACT_PREFIX/share/zsh/site-functions/jextract.zsh"
+
+          if [ -z "$JEXTRACT_HOME" ]; then
+            echo "❌ JEXTRACT_HOME not set"
+            exit 1
+          fi
+
+          echo "✅ JEXTRACT_HOME=$JEXTRACT_HOME"
+
+          if ! command -v jextract &> /dev/null; then
+            echo "❌ jextract not in PATH"
+            exit 1
+          fi
+
+          echo "✅ jextract found in PATH"
+          jextract --version
+
+      - name: Test fish shell configuration
+        shell: fish {0}
+        run: |
+          set JEXTRACT_PREFIX (brew --prefix jextract)
+          source "$JEXTRACT_PREFIX/share/fish/vendor_conf.d/jextract.fish"
+
+          if test -z "$JEXTRACT_HOME"
+            echo "❌ JEXTRACT_HOME not set"
+            exit 1
+          end
+
+          echo "✅ JEXTRACT_HOME=$JEXTRACT_HOME"
+
+          if not command -v jextract &> /dev/null
+            echo "❌ jextract not in PATH"
+            exit 1
+          end
+
+          echo "✅ jextract found in PATH"
+          jextract --version
 
       - name: Cleanup
         if: always()
