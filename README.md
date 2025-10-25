@@ -116,6 +116,29 @@ Based on JDK 25.
 
 ## Usage
 
+### Shell Environment Configuration
+
+The formula installation creates shell environment scripts to automatically configure jextract for your shell. After installation, you'll see instructions to add one of the following to your shell profile:
+
+**For Bash** (`~/.bash_profile` or `~/.bashrc`):
+```bash
+source $(brew --prefix jextract)/etc/profile.d/jextract.sh
+```
+
+**For Zsh** (`~/.zshrc`):
+```bash
+source $(brew --prefix jextract)/share/zsh/site-functions/jextract.zsh
+```
+
+**For Fish** (`~/.config/fish/config.fish`):
+```bash
+source $(brew --prefix jextract)/share/fish/vendor_conf.d/jextract.fish
+```
+
+These scripts will:
+- Set `JEXTRACT_HOME` environment variable pointing to the jextract installation
+- Ensure jextract's bin directory is in your PATH
+
 ### Basic Usage
 
 After installation, jextract will be available in your PATH:

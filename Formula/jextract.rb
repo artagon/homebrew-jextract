@@ -24,6 +24,45 @@ class Jextract < Formula
     # Install directly to prefix to preserve relative paths for bundled runtime
     # The jextract script expects to find runtime/bin/java at ../runtime/bin/java
     prefix.install Dir["*"]
+
+    # Create shell environment configuration files
+    (prefix/"etc/profile.d").mkpath
+    (prefix/"etc/profile.d/jextract.sh").write <<~EOS
+      # jextract environment configuration
+      export JEXTRACT_HOME="#{prefix}"
+      export PATH="#{bin}:$PATH"
+    EOS
+
+    (prefix/"share/zsh/site-functions").mkpath
+    (prefix/"share/zsh/site-functions/jextract.zsh").write <<~EOS
+      # jextract environment configuration
+      export JEXTRACT_HOME="#{prefix}"
+      export PATH="#{bin}:$PATH"
+    EOS
+
+    (prefix/"share/fish/vendor_conf.d").mkpath
+    (prefix/"share/fish/vendor_conf.d/jextract.fish").write <<~EOS
+      # jextract environment configuration
+      set -gx JEXTRACT_HOME "#{prefix}"
+      fish_add_path "#{bin}"
+    EOS
+  end
+
+  def caveats
+    <<~EOS
+      To automatically configure your shell environment for jextract, add the following to your shell profile:
+
+      For Bash (~/.bash_profile or ~/.bashrc):
+        source #{prefix}/etc/profile.d/jextract.sh
+
+      For Zsh (~/.zshrc):
+        source #{prefix}/share/zsh/site-functions/jextract.zsh
+
+      For Fish (~/.config/fish/config.fish):
+        source #{prefix}/share/fish/vendor_conf.d/jextract.fish
+
+      This will set JEXTRACT_HOME and ensure jextract is in your PATH.
+    EOS
   end
   test do
     output = shell_output("#{bin}/jextract --version 2>&1")
