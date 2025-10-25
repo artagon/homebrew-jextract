@@ -30,14 +30,20 @@ class Jextract < Formula
     (prefix/"etc/profile.d/jextract.sh").write <<~EOS
       # jextract environment configuration
       export JEXTRACT_HOME="#{prefix}"
-      export PATH="#{bin}:$PATH"
+      case ":$PATH:" in
+        *:"#{bin}":*) ;;
+        *) export PATH="$PATH:#{bin}" ;;
+      esac
     EOS
 
     (prefix/"share/zsh/site-functions").mkpath
     (prefix/"share/zsh/site-functions/jextract.zsh").write <<~EOS
       # jextract environment configuration
       export JEXTRACT_HOME="#{prefix}"
-      export PATH="#{bin}:$PATH"
+      case ":$PATH:" in
+        *:"#{bin}":*) ;;
+        *) export PATH="$PATH:#{bin}" ;;
+      esac
     EOS
 
     (prefix/"share/fish/vendor_conf.d").mkpath
