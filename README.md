@@ -1,6 +1,8 @@
 # homebrew-jextract
 
-Homebrew tap for Jextract - the tool to mechanically generate Java bindings from native library headers. Includes automated updates, CI/CD, and support for both macOS and Linux.
+**Homebrew tap for Jextract** - OpenJDK's official tool to automatically generate Java bindings from C/C++ library headers without writing JNI code. Part of Project Panama's Foreign Function & Memory API (FFM API). Call native libraries from Java with zero boilerplate.
+
+🚀 **Easy Installation** • ✅ **Multi-Platform** (macOS ARM64/x64, Linux ARM64/x64) • 🔄 **Auto-Updates** • 🔒 **SHA-256 Verified**
 
 [![Release](https://github.com/Artagon/homebrew-jextract/actions/workflows/release.yml/badge.svg)](https://github.com/Artagon/homebrew-jextract/actions/workflows/release.yml)
 [![Validate](https://github.com/Artagon/homebrew-jextract/actions/workflows/validate.yml/badge.svg)](https://github.com/Artagon/homebrew-jextract/actions/workflows/validate.yml)
@@ -8,63 +10,115 @@ Homebrew tap for Jextract - the tool to mechanically generate Java bindings from
 
 ## About Jextract
 
-[Jextract](https://jdk.java.net/jextract/) is a tool which **mechanically generates Java bindings from native library headers**. Part of OpenJDK's Project Panama, it eliminates the need for manual JNI code by automatically creating type-safe Java interfaces to C libraries using the Foreign Function & Memory API (JEP 454).
+**[Jextract](https://jdk.java.net/jextract/)** is OpenJDK's official tool for automatically generating Java bindings from C library headers, eliminating the need to write manual JNI (Java Native Interface) code. Part of [Project Panama](https://openjdk.org/projects/panama/), jextract bridges the gap between Java and native code through the modern **Foreign Function & Memory (FFM) API** ([JEP 454](https://openjdk.org/jeps/454)).
 
-### What Does Jextract Provide?
+### 🎯 The Problem Jextract Solves
 
-- **Automatic Java Bindings**: Generate Java code to call C libraries directly from header files
-- **Type-Safe Access**: Strong typing for native library interfaces with compile-time safety
-- **Foreign Function & Memory API**: Uses modern Java FFM API ([JEP 454](https://openjdk.org/jeps/454)) instead of JNI
-- **Header Parsing**: Leverages libclang C API for accurate header file parsing
-- **No Manual JNI**: Eliminates hand-written JNI boilerplate and marshalling code
-- **Cross-Platform**: Supports macOS (ARM64/x64), Linux (ARM64/x64), and Windows
+Traditionally, calling native C/C++ libraries from Java required:
+- Writing complex JNI boilerplate code in both Java and C
+- Manual memory management and type conversions
+- Dealing with platform-specific compilation issues
+- Maintaining fragile code that breaks when headers change
+- Deep expertise in both Java and native development
 
-### Key Benefits
+**Jextract automates all of this**, parsing C headers with libclang and generating type-safe Java bindings automatically.
 
-- **Productivity**: Generate bindings automatically instead of writing thousands of lines of JNI
-  - One command replaces hours of manual coding
-  - Automatically handles complex C types and structures
-  - Regenerate bindings instantly when headers change
+### 🚀 What Jextract Provides
 
-- **Safety**: Modern FFM API provides memory-safe access without JNI pitfalls
-  - Compile-time type checking
-  - No native crashes from incorrect marshalling
-  - Memory segments with automatic bounds checking
-  - Resource management with try-with-resources
+- **Zero-Code Native Interop**: Call C functions, access structs, use callbacks - no JNI code required
+- **Automatic Code Generation**: Parse `.h` header files → Generate complete Java bindings
+- **Type-Safe Memory Access**: Leverage Java's FFM API for safe, structured access to native memory
+- **Modern Java Integration**: Works with Java 21+ preview features, graduating to standard in future releases
+- **libclang-Powered**: Uses LLVM's libclang for industrial-strength C header parsing
+- **Struct & Union Support**: Full support for complex C data structures, nested types, and unions
+- **Function Pointers & Callbacks**: Bidirectional interop with native callbacks and function pointers
+- **Cross-Platform**: Generate bindings for Windows, macOS, and Linux from the same headers
 
-- **Performance**: Direct native calls without JNI overhead
-  - Zero-copy memory access
-  - Optimized by HotSpot JIT
-  - Minimal marshalling overhead
-  - Stack-based memory allocation
+### 🔧 Real-World Use Cases
 
-- **Maintainability**: Cleaner architecture and easier updates
-  - Pure Java code, no C glue code
-  - Version control friendly (no binary artifacts)
-  - Easy to regenerate when libraries update
-  - Clear correspondence to C APIs
+#### System Libraries & APIs
+```bash
+# Generate bindings for POSIX APIs
+jextract --source -t org.unix /usr/include/unistd.h
 
-### What is Project Panama?
+# macOS frameworks
+jextract --source -t com.apple.foundation Foundation.h
 
-[Project Panama](https://openjdk.org/projects/panama/) is an OpenJDK project aimed at improving and enriching the connections between the Java virtual machine and well-defined but "foreign" (non-Java) APIs, including C, C++, and other native libraries. Jextract is a key component that makes Panama practical for real-world use.
+# Linux system calls
+jextract --source -t org.linux /usr/include/sys/socket.h
+```
 
-**Panama provides:**
-- **Foreign Function API**: Call native functions without JNI
-- **Foreign Memory API**: Direct memory access outside the Java heap
-- **Jextract Tool**: Automatic binding generation from C headers
-- **Vector API**: SIMD operations for high-performance computing
+#### Graphics & Media
+- **OpenGL/Vulkan**: Direct GPU programming without JNI overhead
+- **FFmpeg**: Video/audio processing with native performance
+- **SDL2**: Game development with native windowing and input
+- **Cairo/Skia**: High-performance 2D graphics rendering
 
-### Use Cases
+#### Scientific Computing
+- **BLAS/LAPACK**: Linear algebra operations at native speed
+- **FFTW**: Fast Fourier transforms for signal processing
+- **HDF5**: Scientific data format I/O
+- **CUDA/ROCm**: GPU-accelerated computing
 
-Jextract is particularly valuable for:
+#### Embedded Systems
+- **libusb**: Direct USB device access
+- **wiringPi**: Raspberry Pi GPIO control
+- **SerialPort APIs**: Industrial device communication
 
-- **System Libraries**: Access OS-specific APIs (Windows API, POSIX, etc.)
-- **Legacy C Libraries**: Modernize Java integration with existing C codebases
-- **High-Performance Computing**: Direct access to optimized native libraries (BLAS, LAPACK, etc.)
-- **Graphics & Media**: Interface with OpenGL, Vulkan, FFmpeg, SDL
-- **Embedded Systems**: Java on resource-constrained devices needing native access
-- **Scientific Computing**: Integrate with domain-specific C/C++ libraries
-- **Game Development**: Access to native game engines and frameworks
+#### Database & Performance
+- **SQLite**: Embedded database without JDBC overhead
+- **LevelDB/RocksDB**: High-performance key-value stores
+- **jemalloc/tcmalloc**: Custom memory allocators
+
+### ⚡ Key Advantages Over Traditional JNI
+
+| Feature | Jextract + FFM API | Traditional JNI |
+|---------|-------------------|-----------------|
+| **Code Generation** | Automatic from headers | Manual for every function |
+| **Type Safety** | Compile-time checked | Runtime errors common |
+| **Memory Safety** | Structured, scoped allocation | Manual malloc/free |
+| **Performance** | Near-native (no marshalling) | Marshalling overhead |
+| **Maintenance** | Regenerate when headers change | Manual updates required |
+| **Learning Curve** | Java developers only | Requires C/C++ expertise |
+| **Debugging** | Pure Java stack traces | Mixed Java/native traces |
+| **Build Complexity** | No native compilation | Platform-specific builds |
+
+### 💡 Technical Highlights
+
+- **Project Panama Integration**: Part of OpenJDK's initiative to improve Java-native interoperability
+- **Foreign Function & Memory API**: Modern replacement for JNI with improved safety and performance
+- **MemorySegment API**: Safe, deterministic memory management without garbage collection
+- **Arena-Based Allocation**: Automatic cleanup of native resources using try-with-resources
+- **SymbolLookup**: Runtime function discovery from shared libraries
+- **MethodHandle-Based**: Uses Java's method handles for efficient, type-safe native calls
+- **Varargs Support**: Handles C variadic functions like printf
+- **Macro Expansion**: Processes C preprocessor macros and constants
+
+### 🎓 Who Should Use Jextract?
+
+- **Java Developers** needing to call native libraries without learning JNI
+- **Systems Programmers** who want to use Java for low-level programming
+- **Library Authors** creating Java wrappers for C/C++ libraries
+- **Scientific Computing** developers requiring native performance with Java productivity
+- **Game Developers** interfacing with graphics and audio libraries
+- **IoT/Embedded** engineers working with hardware interfaces
+- **Performance Engineers** optimizing critical paths with native code
+
+### 📋 Requirements
+
+- **Java 21 or later** (FFM API is in preview, graduating to standard in future releases)
+- **`--enable-preview`** flag required for compilation and execution
+- **C headers** for the libraries you want to bind
+- **Target library** installed on the system (e.g., `.so` on Linux, `.dylib` on macOS)
+
+### 🔗 Part of Project Panama
+
+Jextract is one component of [Project Panama](https://openjdk.org/projects/panama/), OpenJDK's comprehensive effort to improve Java's connection to native code:
+
+- **Foreign Function API**: Call native functions without JNI ([JEP 454](https://openjdk.org/jeps/454))
+- **Foreign Memory API**: Safe native memory access ([JEP 454](https://openjdk.org/jeps/454))
+- **Vector API**: SIMD operations for parallel computation ([JEP 469](https://openjdk.org/jeps/469))
+- **Jextract**: Automatic binding generation (this tool)
 
 ## Quick Start
 
@@ -169,7 +223,7 @@ which jextract
 
 **For cask installation:**
 ```bash
-/Library/Java/JavaVirtualMachines/jextract-25.jdk/bin/jextract --version
+/Library/Java/JavaVirtualMachines/jextract-25.jdk/Contents/Home/bin/jextract --version
 ```
 
 ## Updating
@@ -214,134 +268,24 @@ Or visit the [Actions tab](https://github.com/Artagon/homebrew-jextract/actions/
 
 ## Jextract Resources
 
-### Official Documentation & Specifications
+### Official Documentation
+- **[Jextract Home](https://jdk.java.net/jextract/)** - Official download page
+- **[JEP 454: Foreign Function & Memory API](https://openjdk.org/jeps/454)** - The underlying API used by jextract
+- **[Panama Project](https://openjdk.org/projects/panama/)** - Parent project for foreign function support
 
-#### Core Documentation
-- **[Jextract Official Home](https://jdk.java.net/jextract/)** - Official download page and primary documentation
-- **[Jextract User Guide](https://github.com/openjdk/jextract/blob/master/doc/GUIDE.md)** - Comprehensive guide on using jextract
-- **[Foreign Function & Memory API Guide (Oracle)](https://docs.oracle.com/en/java/javase/25/core/foreign-function-and-memory-api.html)** - Official guide for the FFM API
-- **[Dev.java FFM Tutorial](https://dev.java/learn/ffm/)** - Interactive tutorial for Foreign Function & Memory API
+### Getting Started
+- **[Jextract Samples](https://github.com/openjdk/jextract)** - Example code and documentation
+- **[Foreign Function & Memory API Guide](https://docs.oracle.com/en/java/javase/22/core/foreign-function-and-memory-api.html)** - Official guide for using the FFM API
 
-#### JEP Specifications
-- **[JEP 454: Foreign Function & Memory API](https://openjdk.org/jeps/454)** - Final specification (JDK 22+)
-- **[JEP 442: Foreign Function & Memory API (Third Preview)](https://openjdk.org/jeps/442)** - JDK 21
-- **[JEP 434: Foreign Function & Memory API (Second Preview)](https://openjdk.org/jeps/434)** - JDK 20
-- **[JEP 424: Foreign Function & Memory API (Preview)](https://openjdk.org/jeps/424)** - JDK 19
-
-### Official Repository
-- **[openjdk/jextract](https://github.com/openjdk/jextract)** - Official GitHub repository (465+ stars)
-  - Source code and build instructions
-  - Issue tracker and discussions
-  - Sample code and tests
-  - Requires JDK 23+ and LLVM 13.0.0+ to build
-
-### Project Information
-- **[OpenJDK Project Panama](https://openjdk.org/projects/panama/)** - Parent project for foreign function support
-- **[Project Panama Wiki](https://wiki.openjdk.org/display/panama)** - Design documents and project status
-- **[Code Tools Project](https://openjdk.org/projects/code-tools)** - Jextract's home project
-
-### Guides & Tutorials
-
-#### Beginner-Friendly
-- **[Guide to Java Project Panama (Baeldung)](https://www.baeldung.com/java-project-panama)** - Comprehensive beginner's guide
-- **[Project Panama for Newbies (Part 1)](https://foojay.io/today/project-panama-for-newbies/)** - Introduction series
-- **[Project Panama for Newbies (Part 2)](https://foojay.io/today/project-panama-for-newbies-part-2/)** - Continuation
-- **[Project Panama for Newbies (Part 3)](https://foojay.io/today/project-panama-for-newbies-part-3/)** - Advanced topics
-
-#### In-Depth Tutorials
-- **[From C to Java Code using Panama (SAP)](https://community.sap.com/t5/technology-blog-posts-by-sap/from-c-to-java-code-using-panama/ba-p/13578395)** - Enterprise perspective
-- **[From C to Java Code using Panama (Nerdless)](https://mostlynerdless.de/blog/2023/12/11/from-c-to-java-code-using-panama/)** - Detailed walkthrough
-- **[Writing C Code in Java (Foojay)](https://foojay.io/today/writing-c-code-in-java/)** - Practical examples
-- **[Building Project Panama's jextract tool](https://foojay.io/today/building-project-panamas-jextract-tool-by-yourself/)** - Build from source guide
-
-#### Specialized Topics
-- **[Accessing Native Code in Java (Azul)](https://www.azul.com/blog/accessing-native-code-in-java-with-project-panama/)** - Performance considerations
-- **[Does Java Finally Have a Better Alternative to JNI? (Okta)](https://developer.okta.com/blog/2022/04/08/state-of-ffi-java)** - FFM vs JNI comparison
-
-### Videos & Presentations
-
-#### Conference Talks
-- **[JavaOne 2025: Function and Memory Access in Pure Java](https://www.infoq.com/news/2025/04/foreign-function-minborg/)** - Per-Åke Minborg (Oracle)
-  - Latest developments in FFM API
-  - Replacing JNI with pure Java
-  - Performance comparisons
-
-- **[FOSDEM'22: Java Applications Meet Native Libraries](https://www.youtube.com/results?search_query=java+foreign+function+memory+api+fosdem)** - Testing preview features
-  - 3rd preview of Foreign Function & Memory API (Java 21)
-  - Practical demonstrations
-
-#### Inside Java
-- **[Project Panama and jextract (Inside.java)](https://inside.java/2020/10/06/jextract/)** - Official OpenJDK blog post
-  - Historical context and evolution
-  - Design decisions
-
-### Community Resources
-
-#### Mailing Lists & Discussion
-- **[jextract-dev Mailing List](mailto:jextract-dev@openjdk.org)** - Development discussions (subscription required)
-- **[panama-dev Mailing List](https://mail.openjdk.org/mailman/listinfo/panama-dev)** - Panama project discussions
-- **[GitHub Discussions](https://github.com/Artagon/homebrew-jextract/discussions)** - Community Q&A for this tap
-
-#### Support Channels
-- **[Download Support](mailto:download-help@openjdk.org)** - File download issues
-- **[Stack Overflow: jextract](https://stackoverflow.com/questions/tagged/jextract)** - Community Q&A
-- **[Stack Overflow: project-panama](https://stackoverflow.com/questions/tagged/project-panama)** - Panama questions
-
-### Example Projects & Code Samples
-
-#### Official Examples
-- **[openjdk/jextract Samples](https://github.com/openjdk/jextract/tree/master/samples)** - Official sample code
-  - Basic C library bindings
-  - OpenGL examples
-  - SDL integration
-
-#### Community Examples
-- **[Panama4Newbies](https://github.com/carldea/panama4newbies)** - Comprehensive tutorial project by Carl Dea
-  - Step-by-step examples
-  - SDL, OpenGL, and Python integration
-  - Practical real-world scenarios
-
-#### Stack Overflow Examples
-- **[Calling C from Java 17](https://stackoverflow.com/questions/69321128/)** - Using JEP 412
-- **[Traversing Structs in Java 22](https://stackoverflow.com/questions/78523567/)** - Working with C structures
-
-### Technical Specifications
-
-#### Requirements
-- **Build Requirements**:
-  - JDK 23 or higher
-  - LLVM/Clang 13.0.0 or later
-  - Gradle 8.11.1+ (included via wrapper)
-
-- **Runtime Requirements**:
-  - JDK 21 or later
-  - Preview features must be enabled with `--enable-preview` flag
-
-#### How Jextract Works
-- **Header Parsing**: Uses libclang C API to parse native library headers
-- **Binding Generation**: Creates Java source code with:
-  - Method handles for native function calls
-  - Memory layouts for native structures
-  - Type-safe access patterns
-- **FFM API Integration**: Generated code uses Foreign Function & Memory API
-  - No JNI overhead
-  - Direct memory access
-  - Efficient native calls
-
-#### Platform-Specific Notes
-- **macOS**: May require quarantine attribute removal (Catalina+)
-  ```bash
-  xattr -d com.apple.quarantine /path/to/jextract
-  ```
-- **Linux**: Ensure GLIBC 2.27+ for pre-built binaries
-- **Windows**: Requires MSVC runtime for native library support
+### Technical Details
+- Uses libclang to parse C header files
+- Generates Java code using the Foreign Function & Memory API
+- Requires JDK 21 or later with preview features enabled
 
 ### Important Notes
-- Jextract generates code that uses **preview features**, requiring the `--enable-preview` flag
-- The generated bindings are **platform-specific** and tied to the C library version
-- **Regenerate bindings** when native library headers change
-- Generated code targets the **JDK version** that jextract was built with
-- Consider **security implications** when exposing native code to Java
+- Jextract generates code that uses preview features, requiring the `--enable-preview` flag
+- The generated bindings are specific to the platform and C library version
+- Regenerate bindings when native library headers change
 
 ## License
 
